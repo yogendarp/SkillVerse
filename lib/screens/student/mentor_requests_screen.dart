@@ -6,11 +6,8 @@ class MentorRequestsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
-
       appBar: AppBar(
         title: const Text("Mentor Requests"),
-        backgroundColor: Colors.white,
       ),
 
       body: ListView(
@@ -20,26 +17,22 @@ class MentorRequestsScreen extends StatelessWidget {
 
           _requestCard(
             "Rahul",
-            "Need help with AI Project",
-            "High",
-          ),
-
-          _requestCard(
-            "Priya",
-            "Requesting Showcase Guidance",
-            "Medium",
-          ),
-
-          _requestCard(
-            "Arjun",
-            "Need help with Python Basics",
-            "Low",
+            "Requested mentorship for AI & ML",
           ),
 
           _requestCard(
             "Sneha",
-            "Seeking Career Advice",
-            "Medium",
+            "Needs guidance in Robotics",
+          ),
+
+          _requestCard(
+            "Arjun",
+            "Requested project review",
+          ),
+
+          _requestCard(
+            "Priya",
+            "Seeking career guidance",
           ),
         ],
       ),
@@ -49,77 +42,58 @@ class MentorRequestsScreen extends StatelessWidget {
   Widget _requestCard(
       String student,
       String request,
-      String priority,
       ) {
-    Color priorityColor = Colors.green;
-
-    if (priority == "High") {
-      priorityColor = Colors.red;
-    } else if (priority == "Medium") {
-      priorityColor = Colors.orange;
-    }
-
     return Card(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 15),
 
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(16),
 
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment:
+          CrossAxisAlignment.start,
 
           children: [
 
-            Row(
-              mainAxisAlignment:
-              MainAxisAlignment.spaceBetween,
-
-              children: [
-
-                Text(
-                  student,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-
-                Chip(
-                  label: Text(priority),
-                  backgroundColor:
-                  priorityColor.withOpacity(0.15),
-                ),
-              ],
+            Text(
+              student,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
             ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 8),
 
             Text(request),
 
             const SizedBox(height: 15),
 
             Row(
+              mainAxisAlignment:
+              MainAxisAlignment.end,
+
               children: [
 
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: () {},
-
-                    icon: const Icon(Icons.check),
-
-                    label: const Text("Accept"),
+                ElevatedButton.icon(
+                  onPressed: () {},
+                  icon: const Icon(Icons.check),
+                  label: const Text("Approve"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white,
                   ),
                 ),
 
                 const SizedBox(width: 10),
 
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: () {},
-
-                    icon: const Icon(Icons.schedule),
-
-                    label: const Text("Schedule"),
+                ElevatedButton.icon(
+                  onPressed: () {},
+                  icon: const Icon(Icons.close),
+                  label: const Text("Reject"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
                   ),
                 ),
               ],

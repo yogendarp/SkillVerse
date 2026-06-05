@@ -17,20 +17,30 @@ class MenteesScreen extends StatelessWidget {
 
           _menteeCard(
             "Rahul",
+            "AI & ML",
             "Level 4",
-            "92%",
+            0.80,
           ),
 
           _menteeCard(
-            "Priya",
-            "Level 5",
-            "96%",
+            "Sneha",
+            "Robotics",
+            "Level 3",
+            0.65,
           ),
 
           _menteeCard(
             "Arjun",
-            "Level 3",
-            "88%",
+            "Chess",
+            "Level 5",
+            0.92,
+          ),
+
+          _menteeCard(
+            "Priya",
+            "Coding",
+            "Level 2",
+            0.45,
           ),
         ],
       ),
@@ -39,39 +49,69 @@ class MenteesScreen extends StatelessWidget {
 
   Widget _menteeCard(
       String name,
+      String skill,
       String level,
-      String attendance,
+      double progress,
       ) {
     return Card(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 15),
 
-      child: ListTile(
-        leading: const CircleAvatar(
-          child: Icon(Icons.person),
-        ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
 
-        title: Text(name),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
 
-        subtitle: Text(
-          "$level • Attendance $attendance",
-        ),
+          children: [
 
-        trailing: PopupMenuButton(
-          itemBuilder: (context) => const [
-
-            PopupMenuItem(
-              value: "progress",
-              child: Text("View Progress"),
+            Text(
+              name,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
             ),
 
-            PopupMenuItem(
-              value: "feedback",
-              child: Text("Give Feedback"),
+            const SizedBox(height: 5),
+
+            Text("Skill: $skill"),
+            Text(level),
+
+            const SizedBox(height: 12),
+
+            LinearProgressIndicator(
+              value: progress,
+              minHeight: 8,
             ),
 
-            PopupMenuItem(
-              value: "attendance",
-              child: Text("View Attendance"),
+            const SizedBox(height: 8),
+
+            Text(
+              "Progress: ${(progress * 100).toInt()}%",
+            ),
+
+            const SizedBox(height: 10),
+
+            Row(
+              mainAxisAlignment:
+              MainAxisAlignment.end,
+
+              children: [
+
+                TextButton(
+                  onPressed: () {},
+                  child: const Text(
+                    "View Progress",
+                  ),
+                ),
+
+                ElevatedButton(
+                  onPressed: () {},
+                  child: const Text(
+                    "Feedback",
+                  ),
+                ),
+              ],
             ),
           ],
         ),

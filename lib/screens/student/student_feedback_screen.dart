@@ -1,174 +1,105 @@
 import 'package:flutter/material.dart';
 
-class StudentFeedbackScreen extends StatefulWidget {
+class StudentFeedbackScreen extends StatelessWidget {
   const StudentFeedbackScreen({super.key});
-
-  @override
-  State<StudentFeedbackScreen> createState() =>
-      _StudentFeedbackScreenState();
-}
-
-class _StudentFeedbackScreenState
-    extends State<StudentFeedbackScreen> {
-
-  final TextEditingController strengthsController =
-  TextEditingController();
-
-  final TextEditingController improvementController =
-  TextEditingController();
-
-  final TextEditingController goalsController =
-  TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
-
       appBar: AppBar(
         title: const Text("Student Feedback"),
-        backgroundColor: Colors.white,
       ),
 
-      body: SingleChildScrollView(
+      body: ListView(
         padding: const EdgeInsets.all(16),
 
-        child: Column(
-          crossAxisAlignment:
-          CrossAxisAlignment.start,
+        children: [
 
-          children: [
+          _feedbackCard(
+            "Rahul",
+            "Excellent progress in AI & ML. Keep working on model optimization and project building.",
+            "2 days ago",
+          ),
 
-            const Card(
-              child: ListTile(
-                leading: CircleAvatar(
-                  child: Icon(Icons.person),
-                ),
+          _feedbackCard(
+            "Sneha",
+            "Good improvement in Robotics. Focus more on sensor integration and testing.",
+            "1 week ago",
+          ),
 
-                title: Text("Rahul"),
+          _feedbackCard(
+            "Arjun",
+            "Outstanding consistency in Chess. Continue participating in showcases.",
+            "2 weeks ago",
+          ),
 
-                subtitle: Text(
-                  "AI & ML • Level 4",
-                ),
-              ),
+          _feedbackCard(
+            "Priya",
+            "Strong learning attitude. Improve coding practice frequency.",
+            "3 weeks ago",
+          ),
+        ],
+      ),
+
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Add Feedback feature coming soon"),
             ),
-
-            const SizedBox(height: 20),
-
-            const Text(
-              "Strengths",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-
-            const SizedBox(height: 10),
-
-            TextField(
-              controller: strengthsController,
-              maxLines: 4,
-
-              decoration: InputDecoration(
-                hintText:
-                "Enter student's strengths",
-
-                border: OutlineInputBorder(
-                  borderRadius:
-                  BorderRadius.circular(12),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            const Text(
-              "Areas to Improve",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-
-            const SizedBox(height: 10),
-
-            TextField(
-              controller: improvementController,
-              maxLines: 4,
-
-              decoration: InputDecoration(
-                hintText:
-                "Enter improvement areas",
-
-                border: OutlineInputBorder(
-                  borderRadius:
-                  BorderRadius.circular(12),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            const Text(
-              "Next Goals",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-
-            const SizedBox(height: 10),
-
-            TextField(
-              controller: goalsController,
-              maxLines: 4,
-
-              decoration: InputDecoration(
-                hintText:
-                "Enter next goals",
-
-                border: OutlineInputBorder(
-                  borderRadius:
-                  BorderRadius.circular(12),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 30),
-
-            SizedBox(
-              width: double.infinity,
-              height: 55,
-
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(
-                    const SnackBar(
-                      content:
-                      Text("Feedback Saved"),
-                    ),
-                  );
-                },
-
-                icon: const Icon(Icons.save),
-
-                label: const Text(
-                  "Save Feedback",
-                ),
-              ),
-            ),
-          ],
-        ),
+          );
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }
 
-  @override
-  void dispose() {
-    strengthsController.dispose();
-    improvementController.dispose();
-    goalsController.dispose();
-    super.dispose();
+  Widget _feedbackCard(
+      String student,
+      String feedback,
+      String date,
+      ) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 15),
+
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+
+          children: [
+
+            Row(
+              mainAxisAlignment:
+              MainAxisAlignment.spaceBetween,
+
+              children: [
+
+                Text(
+                  student,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                Text(
+                  date,
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 10),
+
+            Text(feedback),
+          ],
+        ),
+      ),
+    );
   }
 }
