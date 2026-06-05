@@ -4,6 +4,7 @@ import 'skills_screen.dart';
 import 'attendance_screen.dart';
 import 'profile_screen.dart';
 import 'leaderboard_screen.dart';
+import 'mentees_screen.dart';
 
 class StudentHome extends StatefulWidget {
   const StudentHome({super.key});
@@ -13,9 +14,21 @@ class StudentHome extends StatefulWidget {
 }
 
 class _StudentHomeState extends State<StudentHome> {
+
+  // Later this will come from Firebase
+  final bool isMentor = true;
+
   int _selectedIndex = 0;
 
-  final List<Widget> _screens = [
+  late final List<Widget> _screens = isMentor
+      ? [
+    const HomeScreen(),
+    const SkillsScreen(),
+    const MenteesScreen(),
+    const AttendanceScreen(),
+    const ProfileScreen(),
+  ]
+      : [
     const HomeScreen(),
     const SkillsScreen(),
     const AttendanceScreen(),
@@ -39,7 +52,39 @@ class _StudentHomeState extends State<StudentHome> {
 
         height: 75,
 
-        destinations: const [
+        destinations: isMentor
+            ? const [
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home),
+            label: 'Home',
+          ),
+
+          NavigationDestination(
+            icon: Icon(Icons.workspace_premium_outlined),
+            selectedIcon: Icon(Icons.workspace_premium),
+            label: 'Skills',
+          ),
+
+          NavigationDestination(
+            icon: Icon(Icons.groups_outlined),
+            selectedIcon: Icon(Icons.groups),
+            label: 'Mentees',
+          ),
+
+          NavigationDestination(
+            icon: Icon(Icons.calendar_month_outlined),
+            selectedIcon: Icon(Icons.calendar_month),
+            label: 'Attendance',
+          ),
+
+          NavigationDestination(
+            icon: Icon(Icons.person_outline),
+            selectedIcon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ]
+            : const [
           NavigationDestination(
             icon: Icon(Icons.home_outlined),
             selectedIcon: Icon(Icons.home),
