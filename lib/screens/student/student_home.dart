@@ -16,7 +16,7 @@ class StudentHome extends StatefulWidget {
 class _StudentHomeState extends State<StudentHome> {
 
   // Later this will come from Firebase
-  final bool isMentor = true;
+  final bool isMentor = false;
 
   int _selectedIndex = 0;
 

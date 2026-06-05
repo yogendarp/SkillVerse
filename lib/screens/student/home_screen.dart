@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'leaderboard_screen.dart';
+import 'showcase_screen.dart';
+import 'notifications_screen.dart';
+import 'achievements_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -82,6 +86,56 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
               ),
+
+              const SizedBox(height: 20),
+
+              const Text(
+                "Quick Actions",
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 15),
+
+              GridView.count(
+                crossAxisCount: 2,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
+                childAspectRatio: 1.4,
+
+                children: [
+
+                  _actionCard(
+                    context,
+                    "Leaderboard",
+                    Icons.leaderboard,
+                  ),
+
+                  _actionCard(
+                    context,
+                    "Showcase",
+                    Icons.emoji_events,
+                  ),
+
+                  _actionCard(
+                    context,
+                    "Notifications",
+                    Icons.notifications,
+                  ),
+
+                  _actionCard(
+                    context,
+                    "Achievements",
+                    Icons.military_tech,
+                  ),
+                ],
+              ),
+
+
 
               const SizedBox(height: 20),
 
@@ -235,6 +289,84 @@ class HomeScreen extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  static Widget _actionCard(
+      BuildContext context,
+      String title,
+      IconData icon,
+      ) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+      ),
+
+      child: InkWell(
+        borderRadius: BorderRadius.circular(20),
+
+        onTap: () {
+
+          if (title == "Leaderboard") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const LeaderboardScreen(),
+              ),
+            );
+          }
+
+          else if (title == "Showcase") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const ShowcaseScreen(),
+              ),
+            );
+          }
+
+          else if (title == "Notifications") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const NotificationsScreen(),
+              ),
+            );
+          }
+
+          else if (title == "Achievements") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const AchievementsScreen(),
+              ),
+            );
+          }
+        },
+
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+
+          children: [
+
+            Icon(
+              icon,
+              size: 35,
+              color: const Color(0xFF2563EB),
+            ),
+
+            const SizedBox(height: 10),
+
+            Text(
+              title,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../widgets/custom_appbar.dart';
+import 'settings_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -10,10 +11,8 @@ class ProfileScreen extends StatelessWidget {
       appBar: const CustomAppBar(
         title: "Profile",
       ),
-
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
-
         child: Column(
           children: [
 
@@ -41,19 +40,17 @@ class ProfileScreen extends StatelessWidget {
                 color: Colors.grey,
               ),
             ),
+
             Container(
               margin: const EdgeInsets.only(top: 10),
-
               padding: const EdgeInsets.symmetric(
                 horizontal: 12,
                 vertical: 6,
               ),
-
               decoration: BoxDecoration(
                 color: Colors.green.shade100,
                 borderRadius: BorderRadius.circular(20),
               ),
-
               child: const Text(
                 "Future Mentor Candidate 🌟",
                 style: TextStyle(
@@ -65,20 +62,38 @@ class ProfileScreen extends StatelessWidget {
 
             const SizedBox(height: 25),
 
-            _infoCard(
-              "Current Skill",
-              "Chess ♟",
+            Row(
+              children: [
+
+                Expanded(
+                  child: _statCard(
+                    "Skill",
+                    "Chess ♟",
+                  ),
+                ),
+
+                const SizedBox(width: 8),
+
+                Expanded(
+                  child: _statCard(
+                    "Level",
+                    "5",
+                  ),
+                ),
+
+                const SizedBox(width: 8),
+
+                Expanded(
+                  child: _statCard(
+                    "XP",
+                    "750",
+                  ),
+                ),
+              ],
             ),
 
-            _infoCard(
-              "Current Level",
-              "Level 5",
-            ),
+            const SizedBox(height: 15),
 
-            _infoCard(
-              "XP",
-              "750 XP",
-            ),
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(16),
@@ -99,8 +114,9 @@ class ProfileScreen extends StatelessWidget {
                     const LinearProgressIndicator(
                       value: 0.75,
                       minHeight: 10,
-                      borderRadius:
-                      BorderRadius.all(Radius.circular(10)),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10),
+                      ),
                     ),
 
                     const SizedBox(height: 8),
@@ -112,19 +128,17 @@ class ProfileScreen extends StatelessWidget {
                 ),
               ),
             ),
+
             const SizedBox(height: 20),
 
             Card(
               child: Padding(
-                padding: EdgeInsets.all(16),
-
+                padding: const EdgeInsets.all(16),
                 child: Column(
-                  crossAxisAlignment:
-                  CrossAxisAlignment.start,
-
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
 
-                    Text(
+                    const Text(
                       "Skill Change Status",
                       style: TextStyle(
                         fontSize: 18,
@@ -132,15 +146,15 @@ class ProfileScreen extends StatelessWidget {
                       ),
                     ),
 
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
 
-                    Text(
+                    const Text(
                       "Eligible after 4 months in current skill",
                     ),
 
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
 
-                    Text(
+                    const Text(
                       "2 Months Remaining",
                       style: TextStyle(
                         color: Colors.orange,
@@ -161,28 +175,24 @@ class ProfileScreen extends StatelessWidget {
 
             Card(
               child: Padding(
-                padding: EdgeInsets.all(16),
-
+                padding: const EdgeInsets.all(16),
                 child: Column(
-                  crossAxisAlignment:
-                  CrossAxisAlignment.start,
-
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
 
-                    Text(
+                    const Text(
                       "Achievements",
                       style: TextStyle(
                         fontSize: 18,
-                        fontWeight:
-                        FontWeight.bold,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
 
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
 
-                    Text("🏆 Quick Learner"),
-                    Text("🔥 30 Day Streak"),
-                    Text("⭐ Showcase Winner"),
+                    const Text("🏆 Quick Learner"),
+                    const Text("🔥 30 Day Streak"),
+                    const Text("⭐ Showcase Winner"),
                   ],
                 ),
               ),
@@ -192,47 +202,79 @@ class ProfileScreen extends StatelessWidget {
 
             Card(
               child: Padding(
-                padding: EdgeInsets.all(16),
-
+                padding: const EdgeInsets.all(16),
                 child: Column(
-                  crossAxisAlignment:
-                  CrossAxisAlignment.start,
-
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
 
-                    Text(
+                    const Text(
                       "Skill Journey",
                       style: TextStyle(
                         fontSize: 18,
-                        fontWeight:
-                        FontWeight.bold,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
 
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
 
-                    Text(
+                    const Text(
                       "Chess ♟ → Coding 💻 → Robotics 🤖",
                     ),
                   ],
                 ),
               ),
             ),
+
             const SizedBox(height: 30),
 
             SizedBox(
               width: double.infinity,
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.edit),
+                label: const Text("Edit Profile"),
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 15,
+                  ),
+                ),
+              ),
+            ),
 
+            const SizedBox(height: 10),
+
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                icon: const Icon(Icons.settings),
+                label: const Text("Settings"),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const SettingsScreen(),
+                    ),
+                  );
+                },
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 15,
+                  ),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            SizedBox(
+              width: double.infinity,
               child: ElevatedButton.icon(
                 icon: const Icon(Icons.logout),
-
                 label: const Text("Logout"),
-
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,
                   foregroundColor: Colors.white,
                 ),
-
                 onPressed: () {},
               ),
             ),
@@ -244,11 +286,10 @@ class ProfileScreen extends StatelessWidget {
 
   static Widget _infoCard(
       String title,
-      String value) {
+      String value,
+      ) {
     return Card(
-      margin:
-      const EdgeInsets.only(bottom: 10),
-
+      margin: const EdgeInsets.only(bottom: 10),
       child: ListTile(
         title: Text(title),
         trailing: Text(
@@ -256,6 +297,33 @@ class ProfileScreen extends StatelessWidget {
           style: const TextStyle(
             fontWeight: FontWeight.bold,
           ),
+        ),
+      ),
+    );
+  }
+
+  static Widget _statCard(
+      String title,
+      String value,
+      ) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          children: [
+
+            Text(
+              value,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            const SizedBox(height: 5),
+
+            Text(title),
+          ],
         ),
       ),
     );

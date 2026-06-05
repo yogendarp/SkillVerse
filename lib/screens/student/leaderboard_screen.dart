@@ -1,157 +1,122 @@
 import 'package:flutter/material.dart';
-import '../../widgets/custom_appbar.dart';
 
 class LeaderboardScreen extends StatelessWidget {
   const LeaderboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final leaders = [
+      {"name": "Rahul", "xp": "1250", "rank": "🥇"},
+      {"name": "Yogi", "xp": "1180", "rank": "🥈"},
+      {"name": "Sneha", "xp": "1020", "rank": "🥉"},
+      {"name": "Kiran", "xp": "950", "rank": "4"},
+      {"name": "Ananya", "xp": "900", "rank": "5"},
+    ];
+
     return Scaffold(
-      appBar: const CustomAppBar(
-        title: "Leaderboard",
+      appBar: AppBar(
+        title: const Text("Leaderboard"),
       ),
 
-      body: Padding(
-        padding: const EdgeInsets.all(16),
+      body: Column(
+        children: [
 
-        child: Column(
-          children: [
+          Container(
+            width: double.infinity,
+            margin: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(20),
 
-            // TOP 3
+            decoration: BoxDecoration(
+              color: Colors.amber.shade100,
+              borderRadius: BorderRadius.circular(20),
+            ),
 
-            Row(
-              mainAxisAlignment:
-              MainAxisAlignment.spaceEvenly,
-
+            child: const Column(
               children: [
 
-                _topPlayer(
-                  "🥈",
-                  "Ananya",
-                  "1080 XP",
+                Icon(
+                  Icons.emoji_events,
+                  size: 50,
+                  color: Colors.orange,
                 ),
 
-                _topPlayer(
-                  "🥇",
-                  "Rahul",
-                  "1200 XP",
+                SizedBox(height: 10),
+
+                Text(
+                  "Top Skill Performers",
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
 
-                _topPlayer(
-                  "🥉",
-                  "Kiran",
-                  "1020 XP",
+                SizedBox(height: 5),
+
+                Text(
+                  "Compete and climb the ranks!",
                 ),
               ],
             ),
+          ),
 
-            const SizedBox(height: 25),
+          Expanded(
+            child: ListView.builder(
+              itemCount: leaders.length,
 
-            Expanded(
-              child: ListView(
-                children: const [
+              itemBuilder: (context, index) {
+                final user = leaders[index];
 
-                  ListTile(
-                    leading: CircleAvatar(
-                      child: Text("4"),
-                    ),
-                    title: Text("Yogi"),
-                    trailing: Text("950 XP"),
+                return Card(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 6,
                   ),
 
-                  ListTile(
+                  child: ListTile(
                     leading: CircleAvatar(
-                      child: Text("5"),
+                      child: Text(
+                        user["rank"]!,
+                      ),
                     ),
-                    title: Text("Priya"),
-                    trailing: Text("900 XP"),
-                  ),
 
-                  ListTile(
-                    leading: CircleAvatar(
-                      child: Text("6"),
+                    title: Text(
+                      user["name"]!,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    title: Text("Arjun"),
-                    trailing: Text("870 XP"),
-                  ),
 
-                  ListTile(
-                    leading: CircleAvatar(
-                      child: Text("7"),
+                    subtitle: Text(
+                      "${user["xp"]} XP",
                     ),
-                    title: Text("Sana"),
-                    trailing: Text("850 XP"),
+
+                    trailing: index == 1
+                        ? Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.green.shade100,
+                        borderRadius:
+                        BorderRadius.circular(20),
+                      ),
+                      child: const Text(
+                        "You",
+                        style: TextStyle(
+                          color: Colors.green,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    )
+                        : null,
                   ),
-                ],
-              ),
+                );
+              },
             ),
-
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-
-              decoration: BoxDecoration(
-                color: const Color(0xFF2563EB),
-                borderRadius:
-                BorderRadius.circular(15),
-              ),
-
-              child: const Column(
-                children: [
-
-                  Text(
-                    "Your Rank",
-                    style: TextStyle(
-                      color: Colors.white70,
-                    ),
-                  ),
-
-                  SizedBox(height: 8),
-
-                  Text(
-                    "#4",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight:
-                      FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
-    );
-  }
-
-  Widget _topPlayer(
-      String medal,
-      String name,
-      String xp,
-      ) {
-    return Column(
-      children: [
-
-        Text(
-          medal,
-          style: const TextStyle(
-            fontSize: 40,
-          ),
-        ),
-
-        const SizedBox(height: 5),
-
-        Text(
-          name,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-
-        Text(xp),
-      ],
     );
   }
 }
