@@ -4,7 +4,6 @@ import '../admin/admin_dashboard.dart';
 import '../student/student_home.dart';
 import '../teacher/teacher_home.dart';
 import '../admin/admin_home.dart';
-import '../mentor/mentor_home.dart';
 
 class LoginScreen extends StatefulWidget {
 
@@ -95,14 +94,6 @@ class _LoginScreenState extends State<LoginScreen> {
         context,
         MaterialPageRoute(
           builder: (_) => const AdminHome(),
-        ),
-      );
-    }
-    else if (widget.role == "mentor") {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => const MentorHome(),
         ),
       );
     }
