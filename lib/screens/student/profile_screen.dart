@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../widgets/custom_appbar.dart';
 import 'settings_screen.dart';
+import '../auth/login_screen.dart';
+import '../auth/role_selection_screen.dart';
+import 'edit_profile_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -232,7 +235,14 @@ class ProfileScreen extends StatelessWidget {
               child: ElevatedButton.icon(
                 icon: const Icon(Icons.edit),
                 label: const Text("Edit Profile"),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const EditProfileScreen(),
+                    ),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(
                     vertical: 15,
@@ -275,7 +285,15 @@ class ProfileScreen extends StatelessWidget {
                   backgroundColor: Colors.red,
                   foregroundColor: Colors.white,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const RoleSelectionScreen(),
+                    ),
+                        (route) => false,
+                  );
+                },
               ),
             ),
           ],

@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'student_requests_screen.dart';
+import 'attendance_management_screen.dart';
+import 'skill_review_screen.dart';
+import 'showcase_management_screen.dart';
+import 'student_list_screen.dart';
 
 class TeacherDashboard extends StatelessWidget {
   const TeacherDashboard({super.key});
@@ -51,10 +56,12 @@ class TeacherDashboard extends StatelessWidget {
 
                 Expanded(
                   child: _dashboardCard(
+                    context,
                     "Students",
                     "120",
                     Icons.people,
                     Colors.blue,
+                    const StudentListScreen(),
                   ),
                 ),
 
@@ -62,13 +69,15 @@ class TeacherDashboard extends StatelessWidget {
 
                 Expanded(
                   child: _dashboardCard(
+                    context,
                     "Requests",
                     "8",
                     Icons.assignment,
                     Colors.orange,
+                    const StudentRequestsScreen(),
                   ),
                 ),
-              ],
+            ],
             ),
 
             const SizedBox(height: 10),
@@ -78,10 +87,12 @@ class TeacherDashboard extends StatelessWidget {
 
                 Expanded(
                   child: _dashboardCard(
+                    context,
                     "Attendance",
                     "92%",
                     Icons.calendar_month,
                     Colors.green,
+                    const AttendanceManagementScreen(),
                   ),
                 ),
 
@@ -89,10 +100,12 @@ class TeacherDashboard extends StatelessWidget {
 
                 Expanded(
                   child: _dashboardCard(
+                    context,
                     "Showcases",
                     "3",
                     Icons.emoji_events,
                     Colors.purple,
+                    const ShowcaseManagementScreen(),
                   ),
                 ),
               ],
@@ -134,36 +147,51 @@ class TeacherDashboard extends StatelessWidget {
   }
 
   static Widget _dashboardCard(
+      BuildContext context,
       String title,
       String value,
       IconData icon,
       Color color,
+      Widget screen,
       ) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
+    return InkWell(
+      borderRadius: BorderRadius.circular(12),
 
-        child: Column(
-          children: [
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => screen,
+          ),
+        );
+      },
 
-            Icon(
-              icon,
-              color: color,
-              size: 35,
-            ),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
 
-            const SizedBox(height: 10),
+          child: Column(
+            children: [
 
-            Text(
-              value,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+              Icon(
+                icon,
+                color: color,
+                size: 35,
               ),
-            ),
 
-            Text(title),
-          ],
+              const SizedBox(height: 10),
+
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              Text(title),
+            ],
+          ),
         ),
       ),
     );

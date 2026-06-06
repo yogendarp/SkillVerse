@@ -19,6 +19,7 @@ class StudentRequestsScreen extends StatelessWidget {
         children: [
 
           _requestCard(
+            context,
             studentName: "Yogi",
             currentSkill: "Chess",
             requestedSkill: "Robotics",
@@ -29,6 +30,7 @@ class StudentRequestsScreen extends StatelessWidget {
           ),
 
           _requestCard(
+            context,
             studentName: "Rahul",
             currentSkill: "Coding",
             requestedSkill: "AI & ML",
@@ -39,6 +41,7 @@ class StudentRequestsScreen extends StatelessWidget {
           ),
 
           _requestCard(
+            context,
             studentName: "Sneha",
             currentSkill: "Art",
             requestedSkill: "Photography",
@@ -52,7 +55,8 @@ class StudentRequestsScreen extends StatelessWidget {
     );
   }
 
-  Widget _requestCard({
+  Widget _requestCard(
+      BuildContext context, {
     required String studentName,
     required String currentSkill,
     required String requestedSkill,
@@ -107,7 +111,12 @@ class StudentRequestsScreen extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      // approve logic later
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("$studentName approved successfully"),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
                     },
 
                     icon: const Icon(Icons.check),
@@ -126,7 +135,12 @@ class StudentRequestsScreen extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      // reject logic later
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("$studentName request rejected"),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
                     },
 
                     icon: const Icon(Icons.close),

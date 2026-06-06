@@ -14,7 +14,13 @@ class ShowcaseManagementScreen extends StatelessWidget {
       ),
 
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Create Showcase feature coming soon"),
+            ),
+          );
+        },
 
         child: const Icon(Icons.add),
       ),
@@ -38,6 +44,7 @@ class ShowcaseManagementScreen extends StatelessWidget {
             const SizedBox(height: 15),
 
             _showcaseCard(
+              context,
               title: "Robotics Showcase 2026",
               date: "15 August 2026",
               venue: "Innovation Lab",
@@ -45,6 +52,7 @@ class ShowcaseManagementScreen extends StatelessWidget {
             ),
 
             _showcaseCard(
+              context,
               title: "Chess Championship",
               date: "28 August 2026",
               venue: "Main Auditorium",
@@ -78,7 +86,8 @@ class ShowcaseManagementScreen extends StatelessWidget {
     );
   }
 
-  Widget _showcaseCard({
+  Widget _showcaseCard(
+  BuildContext context, {
     required String title,
     required String date,
     required String venue,
@@ -116,7 +125,13 @@ class ShowcaseManagementScreen extends StatelessWidget {
 
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Viewing $title"),
+                        ),
+                      );
+                    },
                     child: const Text("View"),
                   ),
                 ),
@@ -125,7 +140,13 @@ class ShowcaseManagementScreen extends StatelessWidget {
 
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Editing $title"),
+                        ),
+                      );
+                    },
                     child: const Text("Edit"),
                   ),
                 ),

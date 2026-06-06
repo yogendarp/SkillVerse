@@ -19,24 +19,28 @@ class AttendanceManagementScreen extends StatelessWidget {
         children: [
 
           _studentAttendanceCard(
+            context,
             "Yogi",
             "Chess",
             "95%",
           ),
 
           _studentAttendanceCard(
+            context,
             "Rahul",
             "Coding",
             "91%",
           ),
 
           _studentAttendanceCard(
+            context,
             "Sneha",
             "Art",
             "88%",
           ),
 
           _studentAttendanceCard(
+            context,
             "Arjun",
             "Robotics",
             "97%",
@@ -47,6 +51,7 @@ class AttendanceManagementScreen extends StatelessWidget {
   }
 
   Widget _studentAttendanceCard(
+      BuildContext context,
       String studentName,
       String skill,
       String attendance,
@@ -82,7 +87,14 @@ class AttendanceManagementScreen extends StatelessWidget {
 
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("$studentName marked Present"),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                    },
 
                     icon: const Icon(Icons.check),
 
@@ -99,7 +111,14 @@ class AttendanceManagementScreen extends StatelessWidget {
 
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("$studentName marked Absent"),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    },
 
                     icon: const Icon(Icons.close),
 
