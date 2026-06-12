@@ -28,58 +28,6 @@ class ReportsScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 20),
-
-            Row(
-              children: [
-                Expanded(
-                  child: _statCard(
-                    "Students",
-                    "520",
-                    Icons.school,
-                    Colors.blue,
-                  ),
-                ),
-
-                const SizedBox(width: 10),
-
-                Expanded(
-                  child: _statCard(
-                    "Teachers",
-                    "35",
-                    Icons.person,
-                    Colors.green,
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 10),
-
-            Row(
-              children: [
-                Expanded(
-                  child: _statCard(
-                    "Mentors",
-                    "48",
-                    Icons.groups,
-                    Colors.orange,
-                  ),
-                ),
-
-                const SizedBox(width: 10),
-
-                Expanded(
-                  child: _statCard(
-                    "Skills",
-                    "18",
-                    Icons.workspace_premium,
-                    Colors.purple,
-                  ),
-                ),
-              ],
-            ),
-
             const SizedBox(height: 25),
 
             const Text(
@@ -135,7 +83,14 @@ class ReportsScreen extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
-                onPressed: () {},
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Attendance Report Exported"),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                },
                 icon: const Icon(Icons.download),
                 label: const Text("Export Attendance Report"),
               ),
@@ -146,7 +101,14 @@ class ReportsScreen extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
-                onPressed: () {},
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Skill Report Exported"),
+                      backgroundColor: Colors.blue,
+                    ),
+                  );
+                },
                 icon: const Icon(Icons.download),
                 label: const Text("Export Skill Report"),
               ),
@@ -157,47 +119,18 @@ class ReportsScreen extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
-                onPressed: () {},
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Showcase Report Exported"),
+                      backgroundColor: Colors.orange,
+                    ),
+                  );
+                },
                 icon: const Icon(Icons.download),
                 label: const Text("Export Showcase Report"),
               ),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  static Widget _statCard(
-      String title,
-      String value,
-      IconData icon,
-      Color color,
-      ) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-
-        child: Column(
-          children: [
-
-            Icon(
-              icon,
-              color: color,
-              size: 35,
-            ),
-
-            const SizedBox(height: 10),
-
-            Text(
-              value,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-
-            Text(title),
           ],
         ),
       ),

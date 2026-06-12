@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
-import '../teacher/teacher_dashboard.dart';
-import '../admin/admin_dashboard.dart';
 import '../student/student_home.dart';
 import '../teacher/teacher_home.dart';
 import '../admin/admin_home.dart';
+import 'signup_screen.dart';
+import '../../services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
 
-  final String role;
-
   const LoginScreen({
     super.key,
-    required this.role,
   });
 
   @override
@@ -29,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void login() {
+  void login() async {
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
 
@@ -37,18 +34,6 @@ class _LoginScreenState extends State<LoginScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Please enter email"),
-        ),
-      );
-      return;
-    }
-
-    final emailRegex =
-    RegExp(r'^[\w\.-]+@([\w-]+\.)+[\w-]{2,4}$');
-
-    if (!emailRegex.hasMatch(email)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please enter a valid email address"),
         ),
       );
       return;
@@ -63,17 +48,29 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    if (password.length < 6) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-              "Password must contain at least 6 characters"),
-        ),
-      );
+    String? result =
+    await AuthService().login(
+      email: email,
+      password: password,
+    );
+
+    if (result == null) {
       return;
     }
 
-    if (widget.role == "student") {
+    if (result.startsWith("ERROR:")) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            result.replaceFirst("ERROR:", ""),
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    if (result == "student") {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -81,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
     }
-    else if (widget.role == "teacher") {
+    else if (result == "teacher") {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -89,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
     }
-    else if (widget.role == "admin") {
+    else if (result == "admin") {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -113,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
 
                 Text(
-                  "Welcome ${widget.role}",
+                  "Welcome Back",
                   style: const TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
@@ -124,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 10),
 
                 Text(
-                  "Login as ${widget.role}",
+                  "Login to SkillVerse",
                   style: const TextStyle(
                     color: Colors.black54,
                   ),
@@ -180,6 +177,22 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
+                TextButton(
+                  onPressed: () {
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const SignupScreen(),
+                      ),
+                    );
+
+                  },
+
+                  child: const Text(
+                    "Don't have an account? Sign Up",
+                  ),
+                )
               ],
             ),
           ),

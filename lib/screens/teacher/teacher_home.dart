@@ -4,6 +4,7 @@ import 'teacher_dashboard.dart';
 import 'student_requests_screen.dart';
 import 'attendance_management_screen.dart';
 import 'showcase_management_screen.dart';
+import 'teacher_profile_screen.dart';
 
 class TeacherHome extends StatefulWidget {
   const TeacherHome({super.key});
@@ -21,6 +22,7 @@ class _TeacherHomeState extends State<TeacherHome> {
     const AttendanceManagementScreen(),
     const SkillReviewScreen(),
     const ShowcaseManagementScreen(),
+    const TeacherProfileScreen(),
   ];
 
   @override
@@ -70,6 +72,11 @@ class _TeacherHomeState extends State<TeacherHome> {
             icon: Icon(Icons.emoji_events_outlined),
             selectedIcon: Icon(Icons.emoji_events),
             label: "Showcase",
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person_outline),
+            selectedIcon: Icon(Icons.person),
+            label: "Profile",
           ),
         ],
       ),

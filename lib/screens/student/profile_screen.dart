@@ -4,6 +4,8 @@ import 'settings_screen.dart';
 import '../auth/login_screen.dart';
 import '../auth/role_selection_screen.dart';
 import 'edit_profile_screen.dart';
+import '../../services/auth_service.dart';
+import '../auth/auth_wrapper.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -285,15 +287,24 @@ class ProfileScreen extends StatelessWidget {
                   backgroundColor: Colors.red,
                   foregroundColor: Colors.white,
                 ),
-                onPressed: () {
+                onPressed: () async {
+
+                  await AuthService().logout();
+
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const RoleSelectionScreen(),
+                      builder: (_) => const AuthWrapper(),
                     ),
                         (route) => false,
                   );
                 },
+              ),
+            ),
+            const Text(
+              "SkillVerse v1.0",
+              style: TextStyle(
+                color: Colors.grey,
               ),
             ),
           ],

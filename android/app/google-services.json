@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "173621785861",
+    "project_id": "skillverse-11",
+    "storage_bucket": "skillverse-11.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:173621785861:android:196d199b093fca1d79336c",
+        "android_client_info": {
+          "package_name": "com.skillverse.app.skillverse"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBre2xwAMcso5xeWbu2opcNkDneCyEMwiE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

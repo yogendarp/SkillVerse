@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../auth/login_screen.dart';
 import '../auth/role_selection_screen.dart';
+import '../auth/auth_wrapper.dart';
 
 
 class SplashScreen extends StatefulWidget {
@@ -35,7 +36,7 @@ class _SplashScreenState extends State<SplashScreen>
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => const RoleSelectionScreen(),
+          builder: (_) => const AuthWrapper(),
         ),
       );
     });

@@ -124,18 +124,21 @@ class TeacherDashboard extends StatelessWidget {
             const SizedBox(height: 15),
 
             _requestTile(
+              context,
               "Yogi",
               "Chess",
               "Robotics",
             ),
 
             _requestTile(
+              context,
               "Rahul",
               "Coding",
               "AI & ML",
             ),
 
             _requestTile(
+              context,
               "Sneha",
               "Art",
               "Photography",
@@ -198,6 +201,7 @@ class TeacherDashboard extends StatelessWidget {
   }
 
   static Widget _requestTile(
+      BuildContext context,
       String student,
       String currentSkill,
       String requestedSkill,
@@ -216,7 +220,14 @@ class TeacherDashboard extends StatelessWidget {
           children: [
 
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("$student approved"),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              },
 
               icon: const Icon(
                 Icons.check_circle,
@@ -225,7 +236,14 @@ class TeacherDashboard extends StatelessWidget {
             ),
 
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("$student rejected"),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              },
 
               icon: const Icon(
                 Icons.cancel,

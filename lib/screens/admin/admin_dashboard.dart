@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'user_management_screen.dart';
+import 'skill_management_screen.dart';
 
 class AdminDashboard extends StatelessWidget {
   const AdminDashboard({super.key});
@@ -51,10 +53,12 @@ class AdminDashboard extends StatelessWidget {
 
                 Expanded(
                   child: _dashboardCard(
+                    context,
                     "Students",
                     "520",
                     Icons.school,
                     Colors.blue,
+                    const UserManagementScreen(),
                   ),
                 ),
 
@@ -62,10 +66,12 @@ class AdminDashboard extends StatelessWidget {
 
                 Expanded(
                   child: _dashboardCard(
+                    context,
                     "Teachers",
                     "35",
                     Icons.person,
                     Colors.green,
+                    const UserManagementScreen(),
                   ),
                 ),
               ],
@@ -78,10 +84,12 @@ class AdminDashboard extends StatelessWidget {
 
                 Expanded(
                   child: _dashboardCard(
+                    context,
                     "Mentors",
                     "48",
                     Icons.groups,
                     Colors.orange,
+                    const UserManagementScreen(),
                   ),
                 ),
 
@@ -89,10 +97,12 @@ class AdminDashboard extends StatelessWidget {
 
                 Expanded(
                   child: _dashboardCard(
+                    context,
                     "Skills",
                     "18",
                     Icons.workspace_premium,
                     Colors.purple,
+                    const SkillManagementScreen(),
                   ),
                 ),
               ],
@@ -154,21 +164,25 @@ class AdminDashboard extends StatelessWidget {
               children: [
 
                 _actionCard(
+                  context,
                   Icons.person_add,
                   "Add Student",
                 ),
 
                 _actionCard(
+                  context,
                   Icons.badge,
                   "Add Teacher",
                 ),
 
                 _actionCard(
+                  context,
                   Icons.groups,
                   "Add Mentor",
                 ),
 
                 _actionCard(
+                  context,
                   Icons.workspace_premium,
                   "Add Skill",
                 ),
@@ -181,40 +195,50 @@ class AdminDashboard extends StatelessWidget {
   }
 
   static Widget _dashboardCard(
+      BuildContext context,
       String title,
       String value,
       IconData icon,
       Color color,
+      Widget screen,
       ) {
-    return Card(
-      elevation: 2,
-
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-
-        child: Column(
-          children: [
-
-            Icon(
-              icon,
-              size: 35,
-              color: color,
-            ),
-
-            const SizedBox(height: 10),
-
-            Text(
-              value,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+    return InkWell(
+      borderRadius: BorderRadius.circular(12),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => screen,
+          ),
+        );
+      },
+      child: Card(
+        elevation: 2,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              Icon(
+                icon,
+                size: 35,
+                color: color,
               ),
-            ),
 
-            const SizedBox(height: 5),
+              const SizedBox(height: 10),
 
-            Text(title),
-          ],
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 5),
+
+              Text(title),
+            ],
+          ),
         ),
       ),
     );
@@ -248,19 +272,25 @@ class AdminDashboard extends StatelessWidget {
   }
 
   static Widget _actionCard(
+      BuildContext context,
       IconData icon,
       String title,
       ) {
     return Card(
       elevation: 2,
-
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: () {},
+
+        onTap: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("$title feature coming soon"),
+            ),
+          );
+        },
 
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-
           children: [
 
             Icon(

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-
 import 'admin_dashboard.dart';
 import 'user_management_screen.dart';
 import 'skill_management_screen.dart';
 import 'showcase_management_screen.dart';
 import 'reports_screen.dart';
+import 'admin_profile_screen.dart';
 
 class AdminHome extends StatefulWidget {
   const AdminHome({super.key});
@@ -22,6 +22,7 @@ class _AdminHomeState extends State<AdminHome> {
     const SkillManagementScreen(),
     const ShowcaseManagementScreen(),
     const ReportsScreen(),
+    const AdminProfileScreen(),
   ];
 
   @override
@@ -70,6 +71,11 @@ class _AdminHomeState extends State<AdminHome> {
             icon: Icon(Icons.bar_chart_outlined),
             selectedIcon: Icon(Icons.bar_chart),
             label: "Reports",
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person_outline),
+            selectedIcon: Icon(Icons.person),
+            label: "Profile",
           ),
         ],
       ),

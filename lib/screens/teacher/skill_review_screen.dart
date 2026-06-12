@@ -84,7 +84,18 @@ class SkillReviewScreen extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
-                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.white,
+                ),
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Student promoted to next level"),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                },
                 icon: const Icon(Icons.arrow_upward),
                 label: const Text("Promote Level"),
               ),
@@ -95,7 +106,18 @@ class SkillReviewScreen extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
-                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                ),
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Mentor recommendation submitted"),
+                      backgroundColor: Colors.blue,
+                    ),
+                  );
+                },
                 icon: const Icon(Icons.school),
                 label: const Text("Recommend as Mentor"),
               ),
@@ -106,7 +128,18 @@ class SkillReviewScreen extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
-                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange,
+                  foregroundColor: Colors.white,
+                ),
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Skill change approved"),
+                      backgroundColor: Colors.orange,
+                    ),
+                  );
+                },
                 icon: const Icon(Icons.check_circle),
                 label: const Text("Approve Skill Change"),
               ),
