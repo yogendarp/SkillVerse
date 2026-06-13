@@ -3,6 +3,8 @@ import 'leaderboard_screen.dart';
 import 'showcase_screen.dart';
 import 'notifications_screen.dart';
 import 'achievements_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../../services/user_service.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -21,12 +23,26 @@ class HomeScreen extends StatelessWidget {
 
             children: [
 
-              const Text(
-                "Good Morning, Yogi 👋",
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
+              FutureBuilder<Map<String, dynamic>?>(
+                future: UserService().getUserData(
+                  FirebaseAuth.instance.currentUser!.uid,
                 ),
+                builder: (context, snapshot) {
+
+                  if (!snapshot.hasData) {
+                    return const Text(
+                      "Good Morning",
+                    );
+                  }
+
+                  return Text(
+                    "Good Morning ${snapshot.data!["name"]}",
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                },
               ),
 
               const SizedBox(height: 5),

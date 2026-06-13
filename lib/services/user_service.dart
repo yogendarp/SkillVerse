@@ -23,4 +23,21 @@ class UserService {
       return null;
     }
   }
+  Future<Map<String, dynamic>?> getUserData(
+      String uid,
+      ) async {
+
+    DocumentSnapshot doc =
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(uid)
+        .get();
+
+    if(doc.exists){
+      return doc.data()
+      as Map<String, dynamic>;
+    }
+
+    return null;
+  }
 }

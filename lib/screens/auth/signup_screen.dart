@@ -11,11 +11,24 @@ class SignupScreen extends StatefulWidget {
 class _SignupScreenState extends State<SignupScreen> {
 
   String selectedRole = "student";
+  String selectedEducationLevel = "School";
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  final nameController = TextEditingController();
+  final institutionController = TextEditingController();
 
   bool loading = false;
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    institutionController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +41,68 @@ class _SignupScreenState extends State<SignupScreen> {
       body: Padding(
         padding: const EdgeInsets.all(20),
 
-        child: Column(
+        child: SingleChildScrollView(
+          child: Column(
           children: [
 
             TextField(
+              controller: nameController,
+              decoration: const InputDecoration(
+                labelText: "Full Name",
+                border: OutlineInputBorder(),
+              ),
+            ),
+
+            const SizedBox(height: 15),
+
+            TextField(
+              controller: institutionController,
+              decoration: const InputDecoration(
+                labelText: "Institution Name",
+                border: OutlineInputBorder(),
+              ),
+            ),
+
+            const SizedBox(height: 15),
+
+            DropdownButtonFormField<String>(
+              value: selectedEducationLevel,
+
+              decoration: const InputDecoration(
+                labelText: "Education Level",
+                border: OutlineInputBorder(),
+              ),
+
+              items: const [
+                DropdownMenuItem(
+                  value: "School",
+                  child: Text("School"),
+                ),
+                DropdownMenuItem(
+                  value: "College",
+                  child: Text("College"),
+                ),
+                DropdownMenuItem(
+                  value: "University",
+                  child: Text("University"),
+                ),
+              ],
+
+              onChanged: (value) {
+                setState(() {
+                  selectedEducationLevel = value!;
+                });
+              },
+            ),
+
+            const SizedBox(height: 15),
+
+            TextField(
               controller: emailController,
+              keyboardType: TextInputType.emailAddress,
               decoration: const InputDecoration(
                 labelText: "Email",
+                border: OutlineInputBorder(),
               ),
             ),
 
@@ -45,6 +113,7 @@ class _SignupScreenState extends State<SignupScreen> {
               obscureText: true,
               decoration: const InputDecoration(
                 labelText: "Password",
+                border: OutlineInputBorder(),
               ),
             ),
 
@@ -55,6 +124,7 @@ class _SignupScreenState extends State<SignupScreen> {
               obscureText: true,
               decoration: const InputDecoration(
                 labelText: "Confirm Password",
+                border: OutlineInputBorder(),
               ),
             ),
 
@@ -90,9 +160,23 @@ class _SignupScreenState extends State<SignupScreen> {
               },
             ),
 
+            const SizedBox(height: 25),
+
             ElevatedButton(
 
               onPressed: () async {
+
+                if(nameController.text.trim().isEmpty ||
+                    institutionController.text.trim().isEmpty) {
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Please fill all fields"),
+                    ),
+                  );
+
+                  return;
+                }
 
                 if(passwordController.text !=
                     confirmPasswordController.text) {
@@ -112,7 +196,10 @@ class _SignupScreenState extends State<SignupScreen> {
 
                 String? result =
                 await AuthService().signup(
+                  name: nameController.text.trim(),
                   email: emailController.text.trim(),
+                  institution: institutionController.text.trim(),
+                  educationLevel: selectedEducationLevel,
                   password: passwordController.text.trim(),
                   role: selectedRole,
                 );
@@ -146,6 +233,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   : const Text("Sign Up"),
             ),
           ],
+        ),
         ),
       ),
     );

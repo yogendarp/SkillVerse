@@ -6,6 +6,8 @@ import '../auth/role_selection_screen.dart';
 import 'edit_profile_screen.dart';
 import '../../services/auth_service.dart';
 import '../auth/auth_wrapper.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../../services/user_service.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -31,19 +33,43 @@ class ProfileScreen extends StatelessWidget {
 
             const SizedBox(height: 15),
 
-            const Text(
-              "Yogi",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+            FutureBuilder<Map<String, dynamic>?>(
+              future: UserService().getUserData(
+                FirebaseAuth.instance.currentUser!.uid,
               ),
+              builder: (context, snapshot) {
+
+                if (!snapshot.hasData) {
+                  return const CircularProgressIndicator();
+                }
+
+                return Text(
+                  snapshot.data!["name"] ?? "User",
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                );
+              },
             ),
 
-            const Text(
-              "Student ID : SV2026001",
-              style: TextStyle(
-                color: Colors.grey,
+            FutureBuilder<Map<String, dynamic>?>(
+              future: UserService().getUserData(
+                FirebaseAuth.instance.currentUser!.uid,
               ),
+              builder: (context, snapshot) {
+
+                if (!snapshot.hasData) {
+                  return const SizedBox();
+                }
+
+                return Text(
+                  snapshot.data!["email"] ?? "",
+                  style: const TextStyle(
+                    color: Colors.grey,
+                  ),
+                );
+              },
             ),
 
             Container(
@@ -56,12 +82,24 @@ class ProfileScreen extends StatelessWidget {
                 color: Colors.green.shade100,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: const Text(
-                "Future Mentor Candidate 🌟",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.green,
+              child: FutureBuilder<Map<String, dynamic>?>(
+                future: UserService().getUserData(
+                  FirebaseAuth.instance.currentUser!.uid,
                 ),
+                builder: (context, snapshot) {
+
+                  if (!snapshot.hasData) {
+                    return const SizedBox();
+                  }
+
+                  return Text(
+                    "${snapshot.data!["role"]} • ${snapshot.data!["educationLevel"]}",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green,
+                    ),
+                  );
+                },
               ),
             ),
 

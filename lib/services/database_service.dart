@@ -7,30 +7,43 @@ class DatabaseService {
 
   Future<void> saveUser({
     required String uid,
+    required String name,
     required String email,
+    required String institution,
+    required String educationLevel,
     required String role,
   }) async {
 
-    try {
+    await _firestore
+        .collection("users")
+        .doc(uid)
+        .set({
 
-      print("Saving user...");
+      "name": name,
+      "email": email,
+      "institution": institution,
+      "educationLevel": educationLevel,
+      "role": role,
+      "createdAt": FieldValue.serverTimestamp(),
 
-      await FirebaseFirestore.instance
-          .collection("users")
-          .doc(uid)
-          .set({
-        "email": email,
-        "role": role,
-        "createdAt": Timestamp.now(),
-      });
+    });
+  }
+  Future<void> updateUser({
+    required String uid,
+    required String name,
+    required String institution,
+    required String educationLevel,
+  }) async {
 
-      print("Saved successfully");
+    await _firestore
+        .collection("users")
+        .doc(uid)
+        .update({
 
-    } catch (e) {
+      "name": name,
+      "institution": institution,
+      "educationLevel": educationLevel,
 
-      print("Firestore Error: $e");
-
-      rethrow;
-    }
+    });
   }
 }
