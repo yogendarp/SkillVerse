@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'all_skills_screen.dart';
 import 'skill_change_request_screen.dart';
+import 'add_skill_screen.dart';
 
 class SkillsScreen extends StatelessWidget {
   const SkillsScreen({super.key});
@@ -8,6 +9,25 @@ class SkillsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton:
+      FloatingActionButton(
+
+        backgroundColor:
+        const Color(0xFF2563EB),
+
+        onPressed: () {
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) =>
+              const AddSkillScreen(),
+            ),
+          );
+        },
+
+        child: const Icon(Icons.add),
+      ),
       backgroundColor: const Color(0xFFF8FAFC),
 
       appBar: AppBar(
