@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'all_skills_screen.dart';
 import 'skill_change_request_screen.dart';
 import 'add_skill_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '../../services/skill_service.dart';
 
 class SkillsScreen extends StatelessWidget {
   const SkillsScreen({super.key});
@@ -57,38 +61,71 @@ class SkillsScreen extends StatelessWidget {
                 color: const Color(0xFF2563EB),
                 borderRadius: BorderRadius.circular(20),
               ),
+              child: FutureBuilder<QuerySnapshot>(
 
-              child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                future: SkillService().getLatestSkill(
+                  FirebaseAuth.instance.currentUser!.uid,
+                ),
 
-                  Text(
-                    "Current Skill",
-                    style: TextStyle(
-                      color: Colors.white70,
-                    ),
-                  ),
+                builder: (context, snapshot) {
 
-                  SizedBox(height: 10),
+                  if (!snapshot.hasData ||
+                      snapshot.data!.docs.isEmpty) {
 
-                  Text(
-                    "♟ Chess",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                    return const Text(
+                      "No Skill Added",
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    );
+                  }
 
-                  SizedBox(height: 10),
+                  final skill =
+                  snapshot.data!.docs.last.data()
+                  as Map<String, dynamic>;
 
-                  Text(
-                    "Community: Chess Masters",
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
+                  return Column(
+                    crossAxisAlignment:
+                    CrossAxisAlignment.start,
+
+                    children: [
+
+                      const Text(
+                        "Current Skill",
+                        style: TextStyle(
+                          color: Colors.white70,
+                        ),
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      Text(
+                        skill["skillName"] ?? "",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      Text(
+                        "Level: ${skill["level"]}",
+                        style: const TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+
+                      Text(
+                        "Status: ${skill["status"]}",
+                        style: const TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
 
@@ -230,6 +267,142 @@ class SkillsScreen extends StatelessWidget {
             ),
 
             const SizedBox(height: 20),
+
+            skillCard(
+              title: "My Skills",
+
+              child: StreamBuilder<QuerySnapshot>(
+
+                stream: SkillService().getUserSkills(
+                  FirebaseAuth.instance.currentUser!.uid,
+                ),
+
+                builder: (context, snapshot) {
+
+                  if(snapshot.hasError){
+                    return Text(snapshot.error.toString());
+                  }
+
+                  if (!snapshot.hasData) {
+                    return const CircularProgressIndicator();
+                  }
+
+                  final skills =
+                      snapshot.data!.docs;
+
+                  if (skills.isEmpty) {
+
+                    return const Text(
+                      "No skills added yet",
+                    );
+                  }
+
+                  return Column(
+
+                    children: skills.map((skill) {
+
+                      final data =
+                      skill.data()
+                      as Map<String, dynamic>;
+
+                      return ListTile(
+                        leading: const Icon(
+                          Icons.workspace_premium,
+                        ),
+
+                        title: Text(
+                          data["skillName"] ?? "",
+                        ),
+
+                        subtitle: Text(
+                          "${data["level"]} • ${data["status"]}",
+                        ),
+
+                        trailing: data["status"] == "Pending"
+                            ? Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+
+                            IconButton(
+                              icon: const Icon(
+                                Icons.edit,
+                                color: Colors.blue,
+                              ),
+                              onPressed: () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      "Edit Skill coming next",
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+
+                            IconButton(
+                              icon: const Icon(
+                                Icons.delete,
+                                color: Colors.red,
+                              ),
+                              onPressed: () async {
+
+                                bool? confirm =
+                                await showDialog<bool>(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: const Text(
+                                        "Delete Skill",
+                                      ),
+                                      content: const Text(
+                                        "Are you sure you want to delete this skill?",
+                                      ),
+                                      actions: [
+
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(
+                                              context,
+                                              false,
+                                            );
+                                          },
+                                          child: const Text(
+                                            "Cancel",
+                                          ),
+                                        ),
+
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(
+                                              context,
+                                              true,
+                                            );
+                                          },
+                                          child: const Text(
+                                            "Delete",
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+
+                                if (confirm == true) {
+                                  await SkillService()
+                                      .deleteSkill(skill.id);
+                                }
+                              },
+                            ),
+                          ],
+                        )
+                            : null,
+                      );
+
+                    }).toList(),
+                  );
+                },
+              ),
+            ),
 
             SizedBox(
               width: double.infinity,

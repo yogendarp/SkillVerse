@@ -1,168 +1,137 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SkillReviewScreen extends StatelessWidget {
   const SkillReviewScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
 
       appBar: AppBar(
-        title: const Text("Skill Review"),
-        backgroundColor: Colors.white,
+        title: const Text(
+          "Skill Reviews",
+        ),
       ),
 
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+      body: StreamBuilder<QuerySnapshot>(
 
-        child: Column(
-          children: [
+        stream: FirebaseFirestore.instance
+            .collection("skills")
+            .where(
+          "status",
+          isEqualTo: "Pending",
+        )
+            .snapshots(),
 
-            const CircleAvatar(
-              radius: 45,
-              child: Icon(
-                Icons.person,
-                size: 50,
+        builder: (context, snapshot) {
+
+          if (!snapshot.hasData) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          final skills =
+              snapshot.data!.docs;
+
+          if (skills.isEmpty) {
+
+            return const Center(
+              child: Text(
+                "No Pending Skills",
               ),
-            ),
+            );
+          }
 
-            const SizedBox(height: 15),
+          return ListView.builder(
 
-            const Text(
-              "Yogi",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            itemCount: skills.length,
 
-            const Text(
-              "Student ID : SV2026001",
-              style: TextStyle(color: Colors.grey),
-            ),
+            itemBuilder: (context, index) {
 
-            const SizedBox(height: 25),
+              final skill = skills[index];
 
-            _infoCard("Current Skill", "Chess ♟"),
-            _infoCard("Current Level", "Level 5"),
-            _infoCard("XP Earned", "750 XP"),
-            _infoCard("Attendance", "95%"),
-            _infoCard("Time in Skill", "4 Months"),
-            _infoCard("Performance", "Excellent"),
+              final data =
+              skill.data()
+              as Map<String, dynamic>;
 
-            const SizedBox(height: 20),
+              return Card(
 
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
+                margin: const EdgeInsets.all(10),
 
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-
-                    const Text(
-                      "Teacher Recommendation",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                  child: ListTile(
+                      leading: const Icon(
+                        Icons.workspace_premium,
                       ),
-                    ),
 
-                    const SizedBox(height: 10),
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                      Text(
+                      data["studentName"] ?? "Unknown Student",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
 
-                    const Text(
-                      "Student has successfully completed Level 5 milestones and is eligible for skill advancement.",
-                    ),
+                      const SizedBox(height: 4),
+
+                  Text(
+                    data["skillName"] ?? "",
+                  ),
                   ],
-                ),
+
               ),
-            ),
 
-            const SizedBox(height: 20),
-
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  foregroundColor: Colors.white,
-                ),
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Student promoted to next level"),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.arrow_upward),
-                label: const Text("Promote Level"),
+              subtitle: Text(
+              "Level: ${data["level"]}",
               ),
-            ),
 
-            const SizedBox(height: 10),
+              trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
 
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white,
-                ),
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Mentor recommendation submitted"),
-                      backgroundColor: Colors.blue,
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.school),
-                label: const Text("Recommend as Mentor"),
+              IconButton(
+              icon: const Icon(
+              Icons.check_circle,
+              color: Colors.green,
               ),
-            ),
-
-            const SizedBox(height: 10),
-
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange,
-                  foregroundColor: Colors.white,
-                ),
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Skill change approved"),
-                      backgroundColor: Colors.orange,
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.check_circle),
-                label: const Text("Approve Skill Change"),
+              onPressed: () async {
+              await FirebaseFirestore.instance
+                  .collection("skills")
+                  .doc(skill.id)
+                  .update({
+              "status": "Approved",
+              });
+              },
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
-  static Widget _infoCard(String title, String value) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 10),
+              IconButton(
+              icon: const Icon(
+              Icons.cancel,
+              color: Colors.red,
+              ),
+              onPressed: () async {
+              await FirebaseFirestore.instance
+                  .collection("skills")
+                  .doc(skill.id)
+                  .update({
+              "status": "Rejected",
+              });
+              },
+              ),
+              ],
 
-      child: ListTile(
-        title: Text(title),
+              ),
+              ),
 
-        trailing: Text(
-          value,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+              );
+            },
+          );
+        },
       ),
     );
   }
