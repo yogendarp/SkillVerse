@@ -1,8 +1,51 @@
 import 'package:flutter/material.dart';
 import '../../widgets/custom_appbar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../../services/attendance_service.dart';
 
-class AttendanceScreen extends StatelessWidget {
+class AttendanceScreen extends StatefulWidget {
   const AttendanceScreen({super.key});
+
+  @override
+  State<AttendanceScreen> createState() =>
+      _AttendanceScreenState();
+}
+
+class _AttendanceScreenState
+    extends State<AttendanceScreen> {
+
+  double attendancePercentage = 0;
+  int presentCount = 0;
+  int absentCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    loadAttendance();
+  }
+
+  Future<void> loadAttendance() async {
+
+    String studentId =
+        FirebaseAuth.instance.currentUser!.uid;
+
+    final stats =
+    await AttendanceService()
+        .getAttendanceStats(studentId);
+
+    if (!mounted) return;
+
+    setState(() {
+      attendancePercentage =
+      stats["percentage"];
+
+      presentCount =
+      stats["present"];
+
+      absentCount =
+      stats["absent"];
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +73,7 @@ class AttendanceScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
               ),
 
-              child: const Column(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
 
                 children: [
@@ -45,7 +88,7 @@ class AttendanceScreen extends StatelessWidget {
                   SizedBox(height: 10),
 
                   Text(
-                    "92%",
+                    "${attendancePercentage.toStringAsFixed(1)}%",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 36,
@@ -107,7 +150,7 @@ class AttendanceScreen extends StatelessWidget {
                 Expanded(
                   child: _statCard(
                     "Present",
-                    "24",
+                    presentCount.toString(),
                     Icons.check_circle,
                     Colors.green,
                   ),
@@ -118,7 +161,7 @@ class AttendanceScreen extends StatelessWidget {
                 Expanded(
                   child: _statCard(
                     "Absent",
-                    "2",
+                    absentCount.toString(),
                     Icons.cancel,
                     Colors.red,
                   ),
