@@ -5,6 +5,9 @@ import 'notifications_screen.dart';
 import 'achievements_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../services/user_service.dart';
+import '../../services/attendance_service.dart';
+import '../../services/skill_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -159,72 +162,108 @@ class HomeScreen extends StatelessWidget {
                 children: [
 
                   Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.all(20),
-
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
+                    child: FutureBuilder<Map<String, dynamic>>(
+                      future: AttendanceService().getAttendanceStats(
+                        FirebaseAuth.instance.currentUser!.uid,
                       ),
+                      builder: (context, snapshot) {
 
-                      child: const Column(
-                        children: [
+                        String attendance = "0%";
 
-                          Icon(
-                            Icons.calendar_month,
-                            size: 40,
-                            color: Colors.green,
+                        if (snapshot.hasData) {
+                          attendance =
+                          "${snapshot.data!['percentage'].toStringAsFixed(1)}%";
+                        }
+
+                        return Container(
+                          padding: const EdgeInsets.all(20),
+
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
                           ),
 
-                          SizedBox(height: 10),
+                          child: Column(
+                            children: [
 
-                          Text(
-                            "92%",
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
+                              const Icon(
+                                Icons.calendar_month,
+                                size: 40,
+                                color: Colors.green,
+                              ),
+
+                              const SizedBox(height: 10),
+
+                              Text(
+                                attendance,
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+
+                              const Text("Attendance"),
+                            ],
                           ),
-
-                          Text("Attendance"),
-                        ],
-                      ),
+                        );
+                      },
                     ),
                   ),
 
                   const SizedBox(width: 15),
 
                   Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.all(20),
-
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
+                    child: FutureBuilder<QuerySnapshot>(
+                      future: SkillService().getLatestSkill(
+                        FirebaseAuth.instance.currentUser!.uid,
                       ),
+                      builder: (context, snapshot) {
 
-                      child: const Column(
-                        children: [
+                        String skillName = "No Skill";
 
-                          Icon(
-                            Icons.workspace_premium,
-                            size: 40,
-                            color: Colors.orange,
+                        if (snapshot.hasData &&
+                            snapshot.data!.docs.isNotEmpty) {
+
+                          final skill =
+                          snapshot.data!.docs.last.data()
+                          as Map<String, dynamic>;
+
+                          skillName =
+                              skill['skillName'] ?? "No Skill";
+                        }
+
+                        return Container(
+                          padding: const EdgeInsets.all(20),
+
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
                           ),
 
-                          SizedBox(height: 10),
+                          child: Column(
+                            children: [
 
-                          Text(
-                            "Chess",
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                            ),
+                              const Icon(
+                                Icons.workspace_premium,
+                                size: 40,
+                                color: Colors.orange,
+                              ),
+
+                              const SizedBox(height: 10),
+
+                              Text(
+                                skillName,
+                                style: const TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+
+                              const Text("Current Skill"),
+                            ],
                           ),
-
-                          Text("Current Skill"),
-                        ],
-                      ),
+                        );
+                      },
                     ),
                   ),
                 ],

@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
+import '../../services/leaderboard_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LeaderboardScreen extends StatelessWidget {
   const LeaderboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final leaders = [
-      {"name": "Rahul", "xp": "1250", "rank": "🥇"},
-      {"name": "Yogi", "xp": "1180", "rank": "🥈"},
-      {"name": "Sneha", "xp": "1020", "rank": "🥉"},
-      {"name": "Kiran", "xp": "950", "rank": "4"},
-      {"name": "Ananya", "xp": "900", "rank": "5"},
-    ];
 
     return Scaffold(
       appBar: AppBar(
@@ -60,57 +55,89 @@ class LeaderboardScreen extends StatelessWidget {
           ),
 
           Expanded(
-            child: ListView.builder(
-              itemCount: leaders.length,
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+              future: LeaderboardService().getLeaderboard(),
 
-              itemBuilder: (context, index) {
-                final user = leaders[index];
+              builder: (context, snapshot) {
 
-                return Card(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 6,
-                  ),
+                if (!snapshot.hasData) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
 
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      child: Text(
-                        user["rank"]!,
+                final leaders = snapshot.data!;
+
+                return ListView.builder(
+                  itemCount: leaders.length,
+
+                  itemBuilder: (context, index) {
+
+                    final user = leaders[index];
+
+                    String rank = "";
+
+                    if (index == 0) {
+                      rank = "🥇";
+                    } else if (index == 1) {
+                      rank = "🥈";
+                    } else if (index == 2) {
+                      rank = "🥉";
+                    } else {
+                      rank = "${index + 1}";
+                    }
+                    String currentUserName = "";
+
+                    return Card(
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 6,
                       ),
-                    ),
 
-                    title: Text(
-                      user["name"]!,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                      child: ListTile(
 
-                    subtitle: Text(
-                      "${user["xp"]} XP",
-                    ),
+                        leading: CircleAvatar(
+                          backgroundColor:
+                          index == 0
+                              ? Colors.amber
+                              : index == 1
+                              ? Colors.grey
+                              : index == 2
+                              ? Colors.brown
+                              : null,
 
-                    trailing: index == 1
-                        ? Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 5,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.green.shade100,
-                        borderRadius:
-                        BorderRadius.circular(20),
-                      ),
-                      child: const Text(
-                        "You",
-                        style: TextStyle(
-                          color: Colors.green,
-                          fontWeight: FontWeight.bold,
+                          child: Text(rank),
+                        ),
+
+                        title: Text(
+                          user["name"],
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+
+                        subtitle: Text(
+                          "Attendance: ${user["attendance"].toStringAsFixed(1)}%",
+                        ),
+
+                        trailing: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+
+                            Text(
+                              "${user["score"].toStringAsFixed(1)}",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
+
+                            const Text("Score"),
+                          ],
                         ),
                       ),
-                    )
-                        : null,
-                  ),
+                    );
+                  },
                 );
               },
             ),
