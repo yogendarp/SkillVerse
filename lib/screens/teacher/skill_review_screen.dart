@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../services/notification_service.dart';
 
 class SkillReviewScreen extends StatelessWidget {
   const SkillReviewScreen({super.key});
@@ -100,12 +101,20 @@ class SkillReviewScreen extends StatelessWidget {
               color: Colors.green,
               ),
               onPressed: () async {
-              await FirebaseFirestore.instance
-                  .collection("skills")
-                  .doc(skill.id)
-                  .update({
-              "status": "Approved",
-              });
+                await FirebaseFirestore.instance
+                    .collection("skills")
+                    .doc(skill.id)
+                    .update({
+                  "status": "Approved",
+                });
+
+                await NotificationService()
+                    .createNotification(
+                  userId: data["userId"],
+                  title: "Skill Approved ✅",
+                  message:
+                  "${data["skillName"]} has been approved by your teacher.",
+                );
               },
               ),
 
@@ -115,12 +124,20 @@ class SkillReviewScreen extends StatelessWidget {
               color: Colors.red,
               ),
               onPressed: () async {
-              await FirebaseFirestore.instance
-                  .collection("skills")
-                  .doc(skill.id)
-                  .update({
-              "status": "Rejected",
-              });
+                await FirebaseFirestore.instance
+                    .collection("skills")
+                    .doc(skill.id)
+                    .update({
+                  "status": "Rejected",
+                });
+
+                await NotificationService()
+                    .createNotification(
+                  userId: data["userId"],
+                  title: "Skill Rejected ❌",
+                  message:
+                  "${data["skillName"]} was rejected by your teacher.",
+                );
               },
               ),
               ],

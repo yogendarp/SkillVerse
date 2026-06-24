@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../../services/notification_service.dart';
 
 class NotificationsScreen extends StatelessWidget {
   const NotificationsScreen({super.key});
@@ -10,57 +13,66 @@ class NotificationsScreen extends StatelessWidget {
         title: const Text("Notifications"),
       ),
 
-      body: ListView(
-        children: const [
+      body: StreamBuilder<QuerySnapshot>(
 
-          NotificationTile(
-            icon: Icons.emoji_events,
-            color: Colors.amber,
-            title: "Achievement Unlocked",
-            subtitle: "You earned the Quick Learner badge.",
-            time: "2 mins ago",
-          ),
+        stream: NotificationService()
+            .getNotifications(
+          FirebaseAuth
+              .instance
+              .currentUser!
+              .uid,
+        ),
 
-          NotificationTile(
-            icon: Icons.school,
-            color: Colors.blue,
-            title: "Mentor Update",
-            subtitle: "Your mentor approved your progress report.",
-            time: "1 hour ago",
-          ),
+        builder: (context, snapshot) {
 
-          NotificationTile(
-            icon: Icons.campaign,
-            color: Colors.orange,
-            title: "Showcase Event",
-            subtitle: "Saturday Skill Showcase starts in 3 days.",
-            time: "Today",
-          ),
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                snapshot.error.toString(),
+              ),
+            );
+          }
 
-          NotificationTile(
-            icon: Icons.calendar_month,
-            color: Colors.green,
-            title: "Attendance Updated",
-            subtitle: "Your attendance is now 95%.",
-            time: "Yesterday",
-          ),
+          if (!snapshot.hasData) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
 
-          NotificationTile(
-            icon: Icons.workspace_premium,
-            color: Colors.purple,
-            title: "XP Earned",
-            subtitle: "You gained 50 XP from Chess Practice.",
-            time: "Yesterday",
-          ),
+          final notifications =
+              snapshot.data!.docs;
 
-          NotificationTile(
-            icon: Icons.info,
-            color: Colors.teal,
-            title: "System Notice",
-            subtitle: "SkillVerse v1.0 demo build is active.",
-            time: "2 days ago",
-          ),
-        ],
+          if (notifications.isEmpty) {
+            return const Center(
+              child: Text(
+                "No Notifications",
+              ),
+            );
+          }
+
+          return ListView.builder(
+
+            itemCount:
+            notifications.length,
+
+            itemBuilder: (context, index) {
+
+              final data =
+              notifications[index]
+                  .data()
+              as Map<String, dynamic>;
+
+              return NotificationTile(
+                icon: Icons.notifications,
+                color: Colors.blue,
+                title: data["title"] ?? "",
+                subtitle:
+                data["message"] ?? "",
+                time: "New",
+              );
+            },
+          );
+        },
       ),
     );
   }
