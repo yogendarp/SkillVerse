@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'skill_review_screen.dart';
 import 'teacher_dashboard.dart';
-import 'student_requests_screen.dart';
 import 'attendance_management_screen.dart';
 import 'showcase_management_screen.dart';
 import 'teacher_profile_screen.dart';
@@ -18,7 +17,6 @@ class _TeacherHomeState extends State<TeacherHome> {
 
   final List<Widget> screens = [
     const TeacherDashboard(),
-    const StudentRequestsScreen(),
     const AttendanceManagementScreen(),
     const SkillReviewScreen(),
     const ShowcaseManagementScreen(),
@@ -48,12 +46,6 @@ class _TeacherHomeState extends State<TeacherHome> {
             icon: Icon(Icons.dashboard_outlined),
             selectedIcon: Icon(Icons.dashboard),
             label: "Dashboard",
-          ),
-
-          NavigationDestination(
-            icon: Icon(Icons.assignment_outlined),
-            selectedIcon: Icon(Icons.assignment),
-            label: "Requests",
           ),
 
           NavigationDestination(

@@ -1,12 +1,49 @@
 import 'package:flutter/material.dart';
-import 'student_requests_screen.dart';
 import 'attendance_management_screen.dart';
 import 'skill_review_screen.dart';
 import 'showcase_management_screen.dart';
 import 'student_list_screen.dart';
+import '../../services/dashboard_service.dart';
 
-class TeacherDashboard extends StatelessWidget {
+class TeacherDashboard extends StatefulWidget {
   const TeacherDashboard({super.key});
+
+  @override
+  State<TeacherDashboard> createState() =>
+      _TeacherDashboardState();
+}
+
+class _TeacherDashboardState
+    extends State<TeacherDashboard> {
+
+  int students = 0;
+  int pendingSkills = 0;
+  int showcases = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    loadDashboardData();
+  }
+
+  Future<void> loadDashboardData() async {
+
+    DashboardService service =
+    DashboardService();
+
+    students =
+    await service.getStudentCount();
+
+    pendingSkills =
+    await service.getPendingSkillsCount();
+
+    showcases =
+    await service.getShowcaseCount();
+
+    if (!mounted) return;
+
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +95,7 @@ class TeacherDashboard extends StatelessWidget {
                   child: _dashboardCard(
                     context,
                     "Students",
-                    "120",
+                    students.toString(),
                     Icons.people,
                     Colors.blue,
                     const StudentListScreen(),
@@ -70,11 +107,11 @@ class TeacherDashboard extends StatelessWidget {
                 Expanded(
                   child: _dashboardCard(
                     context,
-                    "Requests",
-                    "8",
+                    "Pending Skills",
+                    pendingSkills.toString(),
                     Icons.assignment,
                     Colors.orange,
-                    const StudentRequestsScreen(),
+                    const SkillReviewScreen(),
                   ),
                 ),
             ],
@@ -102,7 +139,7 @@ class TeacherDashboard extends StatelessWidget {
                   child: _dashboardCard(
                     context,
                     "Showcases",
-                    "3",
+                    showcases.toString(),
                     Icons.emoji_events,
                     Colors.purple,
                     const ShowcaseManagementScreen(),
