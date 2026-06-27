@@ -55,8 +55,9 @@ class LeaderboardScreen extends StatelessWidget {
           ),
 
           Expanded(
-            child: FutureBuilder<List<Map<String, dynamic>>>(
-              future: LeaderboardService().getLeaderboard(),
+            child: Expanded(
+              child: StreamBuilder<List<Map<String, dynamic>>>(
+                stream: LeaderboardService().getLeaderboard(),
 
               builder: (context, snapshot) {
 
@@ -132,7 +133,7 @@ class LeaderboardScreen extends StatelessWidget {
                               ),
                             ),
 
-                            const Text("Score"),
+                            const Text("XP"),
                           ],
                         ),
                       ),
@@ -141,6 +142,7 @@ class LeaderboardScreen extends StatelessWidget {
                 );
               },
             ),
+          ),
           ),
         ],
       ),

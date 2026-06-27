@@ -59,4 +59,21 @@ class SkillService {
         .where('userId', isEqualTo: userId)
         .get();
   }
+  Future<Map<String, dynamic>?> getApprovedSkill(
+      String userId) async {
+
+    final snapshot = await _firestore
+        .collection("skills")
+        .where("userId", isEqualTo: userId)
+        .where("status", isEqualTo: "Approved")
+        .limit(1)
+        .get();
+
+    if (snapshot.docs.isEmpty) {
+      return null;
+    }
+
+    return snapshot.docs.first.data()
+    as Map<String, dynamic>;
+  }
 }

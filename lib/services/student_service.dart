@@ -15,4 +15,19 @@ class StudentService {
     )
         .snapshots();
   }
+  Future<List<Map<String, dynamic>>> getStudentsList() async {
+    final snapshot = await _firestore
+        .collection("users")
+        .where("role", isEqualTo: "student")
+        .get();
+
+    return snapshot.docs.map((doc) {
+      final data = doc.data();
+
+      return {
+        "id": doc.id,
+        "name": data["name"] ?? "",
+      };
+    }).toList();
+  }
 }
