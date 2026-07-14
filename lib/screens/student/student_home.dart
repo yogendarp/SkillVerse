@@ -5,6 +5,7 @@ import 'attendance_screen.dart';
 import 'profile_screen.dart';
 import 'leaderboard_screen.dart';
 import 'mentees_screen.dart';
+import 'spotlight_screen.dart';
 
 class StudentHome extends StatefulWidget {
   const StudentHome({super.key});
@@ -32,7 +33,7 @@ class _StudentHomeState extends State<StudentHome> {
     const HomeScreen(),
     const SkillsScreen(),
     const AttendanceScreen(),
-    const LeaderboardScreen(),
+    const SpotlightScreen(),
     const ProfileScreen(),
   ];
 
@@ -104,9 +105,9 @@ class _StudentHomeState extends State<StudentHome> {
           ),
 
           NavigationDestination(
-            icon: Icon(Icons.leaderboard_outlined),
-            selectedIcon: Icon(Icons.leaderboard),
-            label: 'Leaderboard',
+            icon: Icon(Icons.auto_awesome_outlined),
+            selectedIcon: Icon(Icons.auto_awesome),
+            label: 'Spotlight',
           ),
 
           NavigationDestination(

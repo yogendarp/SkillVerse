@@ -8,6 +8,7 @@ import '../../services/user_service.dart';
 import '../../services/attendance_service.dart';
 import '../../services/skill_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'showcase_history_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -136,7 +137,7 @@ class HomeScreen extends StatelessWidget {
 
                   _actionCard(
                     context,
-                    "Showcase",
+                    "Weekly Showcases",
                     Icons.emoji_events,
                   ),
 
@@ -374,11 +375,12 @@ class HomeScreen extends StatelessWidget {
             );
           }
 
-          else if (title == "Showcase") {
+          else if (title == "Weekly Showcases") {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => const ShowcaseScreen(),
+                builder: (_) =>
+                const ShowcaseHistoryScreen(),
               ),
             );
           }

@@ -43,10 +43,6 @@ class ShowcaseService {
       "studentId",
       isEqualTo: studentId,
     )
-        .orderBy(
-      "createdAt",
-      descending: true,
-    )
         .snapshots();
   }
 

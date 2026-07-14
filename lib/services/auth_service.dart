@@ -51,8 +51,7 @@ class AuthService {
         password: password,
       );
 
-      String? role =
-      await UserService().getUserRole(
+      String? role = await UserService().getUserRole(
         userCredential.user!.uid,
       );
 
@@ -60,7 +59,35 @@ class AuthService {
 
     } on FirebaseAuthException catch (e) {
 
-      return "ERROR:${e.message}";
+      switch (e.code) {
+
+        case "invalid-email":
+          return "ERROR:Please enter a valid email address.";
+
+        case "invalid-credential":
+          return "ERROR:Invalid email or password.";
+
+        case "user-not-found":
+          return "ERROR:No account found with this email.";
+
+        case "wrong-password":
+          return "ERROR:Incorrect password.";
+
+        case "user-disabled":
+          return "ERROR:This account has been disabled.";
+
+        case "too-many-requests":
+          return "ERROR:Too many login attempts. Try again later.";
+
+        case "network-request-failed":
+          return "ERROR:No internet connection.";
+
+        default:
+          return "ERROR:${e.message ?? "Login failed."}";
+      }
+
+    } catch (e) {
+      return "ERROR:Something went wrong. Please try again.";
     }
   }
 

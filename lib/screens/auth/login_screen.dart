@@ -55,6 +55,13 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     if (result == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Your account profile is missing. Please contact the administrator or sign up again.",
+          ),
+        ),
+      );
       return;
     }
 
