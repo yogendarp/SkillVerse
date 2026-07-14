@@ -9,6 +9,8 @@ import '../../services/attendance_service.dart';
 import '../../services/skill_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'showcase_history_screen.dart';
+import '../../services/showcase_service.dart';
+import '../../services/leaderboard_service.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -39,10 +41,27 @@ class HomeScreen extends StatelessWidget {
                     );
                   }
 
+                  final hour = DateTime.now().hour;
+
+                  String greeting;
+
+                  if (hour < 12) {
+                    greeting = "Good Morning";
+                  }
+                  else if (hour < 17) {
+                    greeting = "Good Afternoon";
+                  }
+                  else if (hour < 21) {
+                    greeting = "Good Evening";
+                  }
+                  else {
+                    greeting = "Good Night";
+                  }
+
                   return Text(
-                    "Good Morning ${snapshot.data!["name"]}",
+                    "$greeting ${snapshot.data!["name"]} 👋",
                     style: const TextStyle(
-                      fontSize: 24,
+                      fontSize: 26,
                       fontWeight: FontWeight.bold,
                     ),
                   );
@@ -63,99 +82,74 @@ class HomeScreen extends StatelessWidget {
 
               // XP CARD
 
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(20),
-
-                decoration: BoxDecoration(
-                  color: const Color(0xFF2563EB),
-                  borderRadius: BorderRadius.circular(20),
+              FutureBuilder<int>(
+                future: ShowcaseService().getTotalXP(
+                  FirebaseAuth.instance.currentUser!.uid,
                 ),
 
-                child: const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                builder: (context, snapshot) {
 
-                    Text(
-                      "Current Level",
-                      style: TextStyle(
-                        color: Colors.white70,
-                      ),
+                  final xp = snapshot.data ?? 0;
+
+                  final level = (xp ~/ 100) + 1;
+
+                  return Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(20),
+
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF2563EB),
+                      borderRadius: BorderRadius.circular(20),
                     ),
 
-                    SizedBox(height: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
 
-                    Text(
-                      "Level 5",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      children: [
+
+                        const Text(
+                          "⭐ Skill Progress",
+                          style: TextStyle(
+                            color: Colors.white70,
+                          ),
+                        ),
+
+                        const SizedBox(height: 10),
+
+                        Text(
+                          "Level $level",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+
+                        const SizedBox(height: 10),
+
+                        Text(
+                          "$xp XP Earned",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                          ),
+                        ),
+
+                        const SizedBox(height: 8),
+
+                        const Text(
+                          "Keep Growing 🚀",
+                          style: TextStyle(
+                            color: Colors.white70,
+                          ),
+                        ),
+                      ],
                     ),
-
-                    SizedBox(height: 10),
-
-                    Text(
-                      "750 XP",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ],
-                ),
+                  );
+                },
               ),
 
               const SizedBox(height: 20),
-
-              const Text(
-                "Quick Actions",
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-
-              const SizedBox(height: 15),
-
-              GridView.count(
-                crossAxisCount: 2,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 1.4,
-
-                children: [
-
-                  _actionCard(
-                    context,
-                    "Leaderboard",
-                    Icons.leaderboard,
-                  ),
-
-                  _actionCard(
-                    context,
-                    "Weekly Showcases",
-                    Icons.emoji_events,
-                  ),
-
-                  _actionCard(
-                    context,
-                    "Notifications",
-                    Icons.notifications,
-                  ),
-
-                  _actionCard(
-                    context,
-                    "Achievements",
-                    Icons.military_tech,
-                  ),
-                ],
-              ),
-
-
 
               const SizedBox(height: 20),
 
@@ -203,7 +197,12 @@ class HomeScreen extends StatelessWidget {
                                 ),
                               ),
 
-                              const Text("Attendance"),
+                              const Text(
+                                "Attendance",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ],
                           ),
                         );
@@ -260,7 +259,12 @@ class HomeScreen extends StatelessWidget {
                                 ),
                               ),
 
-                              const Text("Current Skill"),
+                              const Text(
+                                "Current Skill",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ],
                           ),
                         );
@@ -286,7 +290,7 @@ class HomeScreen extends StatelessWidget {
                   children: [
 
                     Text(
-                      "Next Showcase",
+                      "📅 Upcoming Evaluation",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
@@ -305,7 +309,7 @@ class HomeScreen extends StatelessWidget {
                     SizedBox(height: 5),
 
                     Text(
-                      "3 Days Remaining",
+                      "Prepare your skill for this week's review.",
                       style: TextStyle(
                         color: Colors.black54,
                       ),
@@ -313,11 +317,488 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
               ),
+              const SizedBox(height: 25),
+
+              const Text(
+                "Dashboard",
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 15),
+
+              FutureBuilder<List<Map<String, dynamic>>>(
+                future: LeaderboardService().getLeaderboard().first,
+
+                builder: (context, snapshot) {
+
+                  if (!snapshot.hasData) {
+                    return const Card(
+                      child: Padding(
+                        padding: EdgeInsets.all(20),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+                    );
+                  }
+
+                  final leaders = snapshot.data!;
+
+                  return Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+
+                    child: InkWell(
+
+                      borderRadius: BorderRadius.circular(18),
+
+                      onTap: () {
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const LeaderboardScreen(),
+                          ),
+                        );
+
+                      },
+
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+
+                          children: [
+
+                            const Row(
+
+                              children: [
+
+                                Icon(
+                                  Icons.emoji_events,
+                                  color: Colors.orange,
+                                ),
+
+                                SizedBox(width: 10),
+
+                                Text(
+                                  "Leaderboard",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            const SizedBox(height: 18),
+
+                            for (int i = 0;
+                            i < leaders.length && i < 3;
+                            i++)
+
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 10),
+
+                                child: Row(
+
+                                  children: [
+
+                                    Text(
+                                      i == 0
+                                          ? "🥇"
+                                          : i == 1
+                                          ? "🥈"
+                                          : "🥉",
+                                    ),
+
+                                    const SizedBox(width: 12),
+
+                                    Expanded(
+                                      child: Text(
+                                        leaders[i]["name"],
+                                      ),
+                                    ),
+
+                                    Text(
+                                      "${leaders[i]["score"]} XP",
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                            const Divider(),
+
+                            const Align(
+                              alignment: Alignment.centerRight,
+
+                              child: Text(
+                                "View Full →",
+                                style: TextStyle(
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 20),
+
+              StreamBuilder<QuerySnapshot>(
+
+                stream: ShowcaseService()
+                    .getStudentShowcases(
+                  FirebaseAuth.instance.currentUser!.uid,
+                ),
+
+                builder: (context, snapshot) {
+
+                  if (!snapshot.hasData) {
+
+                    return const Card(
+                      child: Padding(
+                        padding: EdgeInsets.all(20),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+                    );
+
+                  }
+
+                  if (snapshot.data!.docs.isEmpty) {
+
+                    return const Card(
+                      child: ListTile(
+                        leading: Icon(Icons.history_edu),
+                        title: Text("Showcase History"),
+                        subtitle: Text(
+                          "No showcase evaluations yet",
+                        ),
+                      ),
+                    );
+
+                  }
+
+                  final data = snapshot.data!.docs.first.data()
+                  as Map<String, dynamic>;
+
+                  return Card(
+
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+
+                    child: InkWell(
+
+                      borderRadius: BorderRadius.circular(18),
+
+                      onTap: () {
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                            const ShowcaseHistoryScreen(),
+                          ),
+                        );
+
+                      },
+
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+
+                        child: Column(
+                          crossAxisAlignment:
+                          CrossAxisAlignment.start,
+
+                          children: [
+
+                            const Row(
+
+                              children: [
+
+                                Icon(
+                                  Icons.history_edu,
+                                  color: Colors.indigo,
+                                ),
+
+                                SizedBox(width: 10),
+
+                                Text(
+                                  "Showcase History",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight:
+                                    FontWeight.bold,
+                                  ),
+                                ),
+
+                              ],
+                            ),
+
+                            const SizedBox(height: 18),
+
+                            Text(
+                              "Latest Evaluation",
+                              style: TextStyle(
+                                color: Colors.grey,
+                              ),
+                            ),
+
+                            const SizedBox(height: 10),
+
+                            Text(
+                              data["skillName"],
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight:
+                                FontWeight.bold,
+                              ),
+                            ),
+
+                            const SizedBox(height: 8),
+
+                            Text(
+                              "Score : ${data["score"]}/100",
+                            ),
+
+                            Text(
+                              "XP Earned : +${data["xp"]}",
+                            ),
+
+                            const SizedBox(height: 10),
+
+                            Text(
+                              data["feedback"],
+                              maxLines: 2,
+                              overflow:
+                              TextOverflow.ellipsis,
+                            ),
+
+                            const Divider(),
+
+                            const Align(
+
+                              alignment:
+                              Alignment.centerRight,
+
+                              child: Text(
+                                "View All →",
+                                style: TextStyle(
+                                  color: Colors.blue,
+                                  fontWeight:
+                                  FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+
+              const SizedBox(height: 20),
+
+              FutureBuilder<QuerySnapshot>(
+                future: FirebaseFirestore.instance
+                    .collection("skills")
+                    .where(
+                  "userId",
+                  isEqualTo: FirebaseAuth.instance.currentUser!.uid,
+                )
+                    .where(
+                  "status",
+                  isEqualTo: "Approved",
+                )
+                    .limit(1)
+                    .get(),
+
+                builder: (context, snapshot) {
+
+                  if (!snapshot.hasData) {
+                    return const Card(
+                      child: Padding(
+                        padding: EdgeInsets.all(20),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+                    );
+                  }
+
+                  if (snapshot.data!.docs.isEmpty) {
+
+                    return const Card(
+                      child: ListTile(
+                        leading: Icon(Icons.emoji_events),
+                        title: Text("Achievements"),
+                        subtitle: Text("Complete your first skill to unlock achievements."),
+                      ),
+                    );
+                  }
+
+                  final data =
+                  snapshot.data!.docs.first.data()
+                  as Map<String, dynamic>;
+
+                  return Card(
+
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+
+                      child: Column(
+                        crossAxisAlignment:
+                        CrossAxisAlignment.start,
+
+                        children: [
+
+                          const Row(
+                            children: [
+
+                              Icon(
+                                Icons.emoji_events,
+                                color: Colors.orange,
+                              ),
+
+                              SizedBox(width: 10),
+
+                              Text(
+                                "Achievements",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 18),
+
+                          Text(
+                            "🏅 ${data["skillName"]} Master",
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+
+                          const SizedBox(height: 8),
+
+                          Text(
+                            "Reached Level ${data["level"]}",
+                          ),
+
+                          const SizedBox(height: 8),
+
+                          const Text(
+                            "Congratulations on completing another milestone!",
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
 
               const SizedBox(height: 25),
 
               const Text(
-                "Recent Achievements",
+                "🔔 Latest Notification",
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 15),
+
+              StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection("notifications")
+                    .where(
+                  "userId",
+                  isEqualTo: FirebaseAuth.instance.currentUser!.uid,
+                )
+                    .orderBy(
+                  "createdAt",
+                  descending: true,
+                )
+                    .limit(1)
+                    .snapshots(),
+
+                builder: (context, snapshot) {
+
+                  if (!snapshot.hasData ||
+                      snapshot.data!.docs.isEmpty) {
+
+                    return const Card(
+                      child: ListTile(
+                        leading: Icon(Icons.notifications_none),
+                        title: Text("No notifications"),
+                      ),
+                    );
+                  }
+
+                  final data =
+                  snapshot.data!.docs.first.data()
+                  as Map<String, dynamic>;
+
+                  return Card(
+                  child: InkWell(
+
+                      borderRadius: BorderRadius.circular(12),
+
+                      onTap: () {
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                            const NotificationsScreen(),
+                          ),
+                        );
+
+                      },
+                    child: ListTile(
+
+                      leading: const Icon(
+                        Icons.notifications,
+                        color: Colors.blue,
+                      ),
+
+                      title: Text(data["title"]),
+
+                      subtitle: Text(data["message"]),
+
+                      trailing: const Icon(Icons.arrow_forward_ios),
+                    ),
+                      ),
+                  );
+                },
+              ),
+
+              const Text(
+                "🏅 Recent Achievements",
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -375,7 +856,7 @@ class HomeScreen extends StatelessWidget {
             );
           }
 
-          else if (title == "Weekly Showcases") {
+          else if (title == "Showcase History") {
             Navigator.push(
               context,
               MaterialPageRoute(

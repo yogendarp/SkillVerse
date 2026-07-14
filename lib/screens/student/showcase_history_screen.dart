@@ -14,7 +14,7 @@ class ShowcaseHistoryScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Weekly Showcases"),
+        title: const Text("Showcase History"),
       ),
 
       body: StreamBuilder<QuerySnapshot>(
