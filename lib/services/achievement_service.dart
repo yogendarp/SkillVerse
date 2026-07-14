@@ -5,15 +5,15 @@ class AchievementService {
       FirebaseFirestore.instance;
 
   Future<void> unlockAchievement({
-    required String studentId,
+    required String userId,
     required String title,
     required String description,
-    required String icon,
+    required String type,
   }) async {
 
     final existing = await _firestore
         .collection("achievements")
-        .where("studentId", isEqualTo: studentId)
+        .where("userId", isEqualTo: userId)
         .where("title", isEqualTo: title)
         .get();
 
@@ -23,13 +23,13 @@ class AchievementService {
 
     await _firestore.collection("achievements").add({
 
-      "studentId": studentId,
+      "userId": userId,
 
       "title": title,
 
       "description": description,
 
-      "icon": icon,
+      "type": type,
 
       "createdAt": FieldValue.serverTimestamp(),
 
@@ -37,13 +37,13 @@ class AchievementService {
   }
 
   Stream<QuerySnapshot> getAchievements(
-      String studentId) {
+      String userId) {
 
     return _firestore
         .collection("achievements")
         .where(
-      "studentId",
-      isEqualTo: studentId,
+      "userId",
+      isEqualTo: userId,
     )
         .orderBy(
       "createdAt",

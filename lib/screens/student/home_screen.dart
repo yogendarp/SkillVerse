@@ -11,9 +11,61 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'showcase_history_screen.dart';
 import '../../services/showcase_service.dart';
 import '../../services/leaderboard_service.dart';
+import '../../services/notification_service.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
+
+  IconData _getNotificationIcon(String title) {
+
+    if (title.contains("Approved")) {
+      return Icons.check_circle;
+    }
+
+    if (title.contains("Rejected")) {
+      return Icons.cancel;
+    }
+
+    if (title.contains("Achievement")) {
+      return Icons.emoji_events;
+    }
+
+    if (title.contains("Attendance")) {
+      return Icons.calendar_month;
+    }
+
+    if (title.contains("Showcase")) {
+      return Icons.star;
+    }
+
+    return Icons.notifications;
+  }
+
+  Color _getNotificationColor(String title) {
+
+    if (title.contains("Approved")) {
+      return Colors.green;
+    }
+
+    if (title.contains("Rejected")) {
+      return Colors.red;
+    }
+
+    if (title.contains("Achievement")) {
+      return Colors.orange;
+    }
+
+    if (title.contains("Attendance")) {
+      return Colors.indigo;
+    }
+
+    if (title.contains("Showcase")) {
+      return Colors.purple;
+    }
+
+    return Colors.blue;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,118 +81,245 @@ class HomeScreen extends StatelessWidget {
 
             children: [
 
-              FutureBuilder<Map<String, dynamic>?>(
-                future: UserService().getUserData(
-                  FirebaseAuth.instance.currentUser!.uid,
-                ),
-                builder: (context, snapshot) {
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
 
-                  if (!snapshot.hasData) {
-                    return const Text(
-                      "Good Morning",
-                    );
-                  }
+                  Expanded(
+                    child: FutureBuilder<Map<String, dynamic>?>(
+                      future: UserService().getUserData(
+                        FirebaseAuth.instance.currentUser!.uid,
+                      ),
+                      builder: (context, snapshot) {
 
-                  final hour = DateTime.now().hour;
+                        if (!snapshot.hasData) {
+                          return const SizedBox();
+                        }
 
-                  String greeting;
+                        final hour = DateTime.now().hour;
 
-                  if (hour < 12) {
-                    greeting = "Good Morning";
-                  }
-                  else if (hour < 17) {
-                    greeting = "Good Afternoon";
-                  }
-                  else if (hour < 21) {
-                    greeting = "Good Evening";
-                  }
-                  else {
-                    greeting = "Good Night";
-                  }
+                        String greeting;
 
-                  return Text(
-                    "$greeting ${snapshot.data!["name"]} 👋",
-                    style: const TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
+                        if (hour < 12) {
+                          greeting = "Good Morning";
+                        } else if (hour < 17) {
+                          greeting = "Good Afternoon";
+                        } else if (hour < 21) {
+                          greeting = "Good Evening";
+                        } else {
+                          greeting = "Good Night";
+                        }
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+
+                            Text(
+                              "$greeting, ${snapshot.data!["name"]} 👋",
+                              style: const TextStyle(
+                                fontSize: 26,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+
+                            const SizedBox(height: 4),
+
+                            const Text(
+                              "Keep building your future 🚀",
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
+                  ),
 
-              const SizedBox(height: 5),
+                  StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection("notifications")
+                        .where(
+                      "userId",
+                      isEqualTo: FirebaseAuth.instance.currentUser!.uid,
+                    )
+                        .where(
+                      "isRead",
+                      isEqualTo: false,
+                    )
+                        .snapshots(),
+                    builder: (context, snapshot) {
 
-              const Text(
-                "Keep building your skills today!",
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 16,
-                ),
+                      final unread =
+                      snapshot.hasData ? snapshot.data!.docs.length : 0;
+
+                      return Stack(
+                        children: [
+
+                          IconButton(
+                            icon: const Icon(
+                              Icons.notifications_outlined,
+                              size: 30,
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const NotificationsScreen(),
+                                ),
+                              );
+                            },
+                          ),
+
+                          if (unread > 0)
+                            Positioned(
+                              right: 8,
+                              top: 8,
+                              child: Container(
+                                padding: const EdgeInsets.all(5),
+                                decoration: const BoxDecoration(
+                                  color: Colors.red,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Text(
+                                  unread > 99 ? "99+" : unread.toString(),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      );
+                    },
+                  ),
+                ],
               ),
 
               const SizedBox(height: 25),
 
               // XP CARD
 
-              FutureBuilder<int>(
-                future: ShowcaseService().getTotalXP(
+              FutureBuilder<Map<String, dynamic>?>(
+                future: UserService().getUserData(
                   FirebaseAuth.instance.currentUser!.uid,
                 ),
 
                 builder: (context, snapshot) {
 
-                  final xp = snapshot.data ?? 0;
+                  if (!snapshot.hasData) {
+                    return const SizedBox();
+                  }
 
-                  final level = (xp ~/ 100) + 1;
+                  final user = snapshot.data!;
+
+                  final int xp = user["xp"] ?? 0;
+                  final int level = user["level"] ?? 1;
+
+                  final int currentLevelXP = (level - 1) * 200;
+                  final int nextLevelXP = level * 200;
+
+                  final double progress =
+                  ((xp - currentLevelXP) /
+                      (nextLevelXP - currentLevelXP))
+                      .clamp(0.0, 1.0);
 
                   return Container(
+
                     width: double.infinity,
-                    padding: const EdgeInsets.all(20),
+
+                    margin: const EdgeInsets.only(bottom: 25),
+
+                    padding: const EdgeInsets.all(22),
 
                     decoration: BoxDecoration(
-                      color: const Color(0xFF2563EB),
-                      borderRadius: BorderRadius.circular(20),
+
+                      borderRadius: BorderRadius.circular(22),
+
+                      gradient: const LinearGradient(
+                        colors: [
+                          Color(0xff4F46E5),
+                          Color(0xff7C3AED),
+                        ],
+                      ),
+
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 12,
+                          offset: Offset(0,6),
+                        ),
+                      ],
                     ),
 
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment:
+                      CrossAxisAlignment.start,
 
                       children: [
 
-                        const Text(
-                          "⭐ Skill Progress",
-                          style: TextStyle(
-                            color: Colors.white70,
-                          ),
+                        Row(
+
+                          children: [
+
+                            const Icon(
+                              Icons.workspace_premium,
+                              color: Colors.amber,
+                              size: 34,
+                            ),
+
+                            const SizedBox(width: 10),
+
+                            Text(
+                              "Level $level",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
 
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 18),
 
                         Text(
-                          "Level $level",
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-
-                        const SizedBox(height: 10),
-
-                        Text(
-                          "$xp XP Earned",
+                          "$xp XP",
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 18,
                           ),
                         ),
 
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 12),
 
-                        const Text(
-                          "Keep Growing 🚀",
-                          style: TextStyle(
+                        ClipRRect(
+                          borderRadius:
+                          BorderRadius.circular(20),
+
+                          child: LinearProgressIndicator(
+                            value: progress,
+                            minHeight: 10,
+                            backgroundColor:
+                            Colors.white24,
+                            valueColor:
+                            const AlwaysStoppedAnimation(
+                              Colors.amber,
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 12),
+
+                        Text(
+                          "${nextLevelXP - xp} XP to Level ${level + 1}",
+                          style: const TextStyle(
                             color: Colors.white70,
+                            fontSize: 15,
                           ),
                         ),
                       ],
@@ -672,22 +851,40 @@ class HomeScreen extends StatelessWidget {
 
                         children: [
 
-                          const Row(
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
 
-                              Icon(
-                                Icons.emoji_events,
-                                color: Colors.orange,
+                              const Row(
+                                children: [
+
+                                  Icon(
+                                    Icons.emoji_events,
+                                    color: Colors.orange,
+                                  ),
+
+                                  SizedBox(width: 10),
+
+                                  Text(
+                                    "Achievements",
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
                               ),
 
-                              SizedBox(width: 10),
-
-                              Text(
-                                "Achievements",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const AchievementsScreen(),
+                                    ),
+                                  );
+                                },
+                                child: const Text("View All"),
                               ),
                             ],
                           ),
@@ -722,12 +919,59 @@ class HomeScreen extends StatelessWidget {
 
               const SizedBox(height: 25),
 
-              const Text(
-                "🔔 Latest Notification",
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
+              Row(
+                children: [
+
+                  const Text(
+                    "🔔 Notifications",
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  const SizedBox(width: 10),
+
+                  StreamBuilder<QuerySnapshot>(
+                    stream: NotificationService().getUnreadNotifications(
+                      FirebaseAuth.instance.currentUser!.uid,
+                    ),
+
+                    builder: (context, snapshot) {
+
+                      if (!snapshot.hasData) {
+                        return const SizedBox();
+                      }
+
+                      final unreadCount =
+                          snapshot.data!.docs.length;
+
+                      if (unreadCount == 0) {
+                        return const SizedBox();
+                      }
+
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 3,
+                        ),
+
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+
+                        child: Text(
+                          unreadCount.toString(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
 
               const SizedBox(height: 15),
@@ -751,10 +995,32 @@ class HomeScreen extends StatelessWidget {
                   if (!snapshot.hasData ||
                       snapshot.data!.docs.isEmpty) {
 
-                    return const Card(
+                    return Card(
                       child: ListTile(
-                        leading: Icon(Icons.notifications_none),
-                        title: Text("No notifications"),
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.grey.shade200,
+                          child: const Icon(
+                            Icons.notifications_none,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        title: const Text(
+                          "You're all caught up!",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: const Text(
+                          "New notifications will appear here.",
+                        ),
+                        trailing: TextButton(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => const NotificationsScreen(),
+                              ),
+                            );
+                          },
+                          child: const Text("View All"),
+                        ),
                       ),
                     );
                   }
@@ -762,6 +1028,16 @@ class HomeScreen extends StatelessWidget {
                   final data =
                   snapshot.data!.docs.first.data()
                   as Map<String, dynamic>;
+
+                  Timestamp? timestamp = data["createdAt"];
+
+                  String time = "";
+
+                  if (timestamp != null) {
+                    time = timeago.format(
+                        timestamp.toDate(),
+                    );
+                  }
 
                   return Card(
                   child: InkWell(
@@ -781,48 +1057,40 @@ class HomeScreen extends StatelessWidget {
                       },
                     child: ListTile(
 
-                      leading: const Icon(
-                        Icons.notifications,
-                        color: Colors.blue,
+                      leading: CircleAvatar(
+                        backgroundColor: _getNotificationColor(data["title"])
+                            .withOpacity(0.15),
+                        child: Icon(
+                          _getNotificationIcon(data["title"]),
+                          color: _getNotificationColor(data["title"]),
+                        ),
                       ),
 
                       title: Text(data["title"]),
 
                       subtitle: Text(data["message"]),
 
-                      trailing: const Icon(Icons.arrow_forward_ios),
+                      trailing: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            time,
+                            style: const TextStyle(
+                              fontSize: 11,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          const SizedBox(height: 5),
+                          const Icon(
+                            Icons.arrow_forward_ios,
+                            size: 16,
+                          ),
+                        ],
+                      ),
                     ),
                       ),
                   );
                 },
-              ),
-
-              const Text(
-                "🏅 Recent Achievements",
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-
-              const SizedBox(height: 15),
-
-              achievementTile(
-                Icons.emoji_events,
-                "Chess Level Up",
-                "Reached Intermediate Level",
-              ),
-
-              achievementTile(
-                Icons.star,
-                "Attendance Streak",
-                "15 Consecutive Days",
-              ),
-
-              achievementTile(
-                Icons.military_tech,
-                "Top Performer",
-                "Weekly Skill Challenge",
               ),
             ],
           ),

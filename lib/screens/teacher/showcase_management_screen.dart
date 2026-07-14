@@ -221,6 +221,7 @@ class _ShowcaseManagementScreenState
                     title: "Weekly Showcase Result",
                     message:
                     "You scored ${scoreController.text} in $selectedSkill.\nTeacher Feedback: ${feedbackController.text}",
+                    type: "showcase",
                   );
 
                   scoreController.clear();

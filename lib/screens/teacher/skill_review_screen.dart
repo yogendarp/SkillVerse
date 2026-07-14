@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../services/notification_service.dart';
+import '../../services/achievement_service.dart';
 
 class SkillReviewScreen extends StatelessWidget {
   const SkillReviewScreen({super.key});
@@ -108,12 +109,28 @@ class SkillReviewScreen extends StatelessWidget {
                   "status": "Approved",
                 });
 
-                await NotificationService()
-                    .createNotification(
+                await NotificationService().createNotification(
                   userId: data["userId"],
                   title: "Skill Approved ✅",
                   message:
                   "${data["skillName"]} has been approved by your teacher.",
+                  type: "skill",
+                );
+
+                await AchievementService().unlockAchievement(
+                  userId: data["userId"],
+                  title: "First Skill Approved",
+                  description:
+                  "Congratulations! Your first skill has been approved.",
+                  type: "skill",
+                );
+
+                await NotificationService().createNotification(
+                  userId: data["userId"],
+                  title: "🏅 Achievement Unlocked",
+                  message:
+                  "You unlocked the achievement 'First Skill Approved'.",
+                  type: "achievement",
                 );
               },
               ),
@@ -137,6 +154,7 @@ class SkillReviewScreen extends StatelessWidget {
                   title: "Skill Rejected ❌",
                   message:
                   "${data["skillName"]} was rejected by your teacher.",
+                  type: "skill",
                 );
               },
               ),
