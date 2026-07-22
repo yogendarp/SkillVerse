@@ -1,33 +1,38 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'xp_service.dart';
 
 class AttendanceService {
   final FirebaseFirestore _firestore =
       FirebaseFirestore.instance;
 
   Future<void> markAttendance({
-    required String studentId,
+    required String userId,
     required String studentName,
     required String status,
   }) async {
 
-    String today =
-    DateTime.now().toString().split(' ')[0];
+    String today = DateTime.now().toString().split(' ')[0];
 
-    // Use studentId + date as document ID
-    String attendanceId =
-        "${studentId}_$today";
+    // Use userId + date as document ID
+    String attendanceId = "${userId}_$today";
 
     await _firestore
         .collection("attendance")
         .doc(attendanceId)
         .set({
-      "studentId": studentId,
+      "userId": userId,
       "studentName": studentName,
       "date": today,
       "status": status,
-      "markedAt":
-      FieldValue.serverTimestamp(),
+      "markedAt": FieldValue.serverTimestamp(),
     });
+
+    // Award XP only if the student is present
+    if (status == "Present") {
+      await XPService().awardAttendanceXP(
+        userId: userId,
+      );
+    }
   }
   Stream<QuerySnapshot> getStudentAttendance(
       String studentId) {

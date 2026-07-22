@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:skillverse/services/attendance_service.dart';
+import '../../services/xp_service.dart';
 
 class AttendanceManagementScreen extends StatelessWidget {
   const AttendanceManagementScreen({super.key});
@@ -80,14 +81,11 @@ class AttendanceManagementScreen extends StatelessWidget {
                             child: ElevatedButton.icon(
                               onPressed: () async {
 
-                                await AttendanceService()
-                                    .markAttendance(
-                                  studentId: student.id,
-                                  studentName:
-                                  data["name"],
+                                await AttendanceService().markAttendance(
+                                  userId: student.id,
+                                  studentName: data["name"],
                                   status: "Present",
                                 );
-
                                 ScaffoldMessenger.of(
                                     context)
                                     .showSnackBar(
@@ -127,7 +125,7 @@ class AttendanceManagementScreen extends StatelessWidget {
 
                                 await AttendanceService()
                                     .markAttendance(
-                                  studentId: student.id,
+                                  userId: student.id,
                                   studentName:
                                   data["name"],
                                   status: "Absent",

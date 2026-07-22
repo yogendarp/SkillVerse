@@ -91,6 +91,57 @@ class XPService {
       );
     }
   }
+  Future<void> awardAttendanceXP({
+    required String userId,
+  }) async {
+    await addXP(
+      userId: userId,
+      earnedXP: 5,
+    );
+  }
+
+  Future<void> awardSkillApprovalXP({
+    required String userId,
+  }) async {
+    await addXP(
+      userId: userId,
+      earnedXP: 50,
+    );
+  }
+
+  Future<void> awardAchievementXP({
+    required String userId,
+  }) async {
+    await addXP(
+      userId: userId,
+      earnedXP: 30,
+    );
+  }
+
+  Future<void> awardSkillCompletionXP({
+    required String userId,
+  }) async {
+    await addXP(
+      userId: userId,
+      earnedXP: 100,
+    );
+  }
+
+  Future<void> awardShowcaseXP({
+    required String userId,
+    required int score,
+  }) async {
+    int earnedXP = 25;
+
+    if (score >= 90) {
+      earnedXP += 40;
+    }
+
+    await addXP(
+      userId: userId,
+      earnedXP: earnedXP,
+    );
+  }
 
   int calculateLevel(int xp) {
     if (xp >= 5000) return 10;

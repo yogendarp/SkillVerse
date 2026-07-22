@@ -531,21 +531,6 @@ class HomeScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(18),
                     ),
 
-                    child: InkWell(
-
-                      borderRadius: BorderRadius.circular(18),
-
-                      onTap: () {
-
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const LeaderboardScreen(),
-                          ),
-                        );
-
-                      },
-
                       child: Padding(
                         padding: const EdgeInsets.all(20),
 
@@ -554,24 +539,43 @@ class HomeScreen extends StatelessWidget {
 
                           children: [
 
-                            const Row(
-
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
 
-                                Icon(
-                                  Icons.emoji_events,
-                                  color: Colors.orange,
+                                const Row(
+                                  children: [
+
+                                    Icon(
+                                      Icons.emoji_events,
+                                      color: Colors.orange,
+                                    ),
+
+                                    SizedBox(width: 10),
+
+                                    Text(
+                                      "Leaderboard",
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+
+                                  ],
                                 ),
 
-                                SizedBox(width: 10),
-
-                                Text(
-                                  "Leaderboard",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => const LeaderboardScreen(),
+                                      ),
+                                    );
+                                  },
+                                  child: const Text("View All"),
                                 ),
+
                               ],
                             ),
 
@@ -613,24 +617,9 @@ class HomeScreen extends StatelessWidget {
                                   ],
                                 ),
                               ),
-
-                            const Divider(),
-
-                            const Align(
-                              alignment: Alignment.centerRight,
-
-                              child: Text(
-                                "View Full →",
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
                           ],
                         ),
                       ),
-                    ),
                   );
                 },
               ),
@@ -681,22 +670,6 @@ class HomeScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(18),
                     ),
 
-                    child: InkWell(
-
-                      borderRadius: BorderRadius.circular(18),
-
-                      onTap: () {
-
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) =>
-                            const ShowcaseHistoryScreen(),
-                          ),
-                        );
-
-                      },
-
                       child: Padding(
                         padding: const EdgeInsets.all(20),
 
@@ -706,24 +679,41 @@ class HomeScreen extends StatelessWidget {
 
                           children: [
 
-                            const Row(
-
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
 
-                                Icon(
-                                  Icons.history_edu,
-                                  color: Colors.indigo,
+                                const Row(
+                                  children: [
+
+                                    Icon(
+                                      Icons.history_edu,
+                                      color: Colors.indigo,
+                                    ),
+
+                                    SizedBox(width: 10),
+
+                                    Text(
+                                      "Showcase History",
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+
+                                  ],
                                 ),
 
-                                SizedBox(width: 10),
-
-                                Text(
-                                  "Showcase History",
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight:
-                                    FontWeight.bold,
-                                  ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => const ShowcaseHistoryScreen(),
+                                      ),
+                                    );
+                                  },
+                                  child: const Text("View All"),
                                 ),
 
                               ],
@@ -767,27 +757,9 @@ class HomeScreen extends StatelessWidget {
                               overflow:
                               TextOverflow.ellipsis,
                             ),
-
-                            const Divider(),
-
-                            const Align(
-
-                              alignment:
-                              Alignment.centerRight,
-
-                              child: Text(
-                                "View All →",
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                  fontWeight:
-                                  FontWeight.bold,
-                                ),
-                              ),
-                            ),
                           ],
                         ),
                       ),
-                    ),
                   );
                 },
               ),
@@ -913,182 +885,6 @@ class HomeScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                  );
-                },
-              ),
-
-              const SizedBox(height: 25),
-
-              Row(
-                children: [
-
-                  const Text(
-                    "🔔 Notifications",
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-
-                  const SizedBox(width: 10),
-
-                  StreamBuilder<QuerySnapshot>(
-                    stream: NotificationService().getUnreadNotifications(
-                      FirebaseAuth.instance.currentUser!.uid,
-                    ),
-
-                    builder: (context, snapshot) {
-
-                      if (!snapshot.hasData) {
-                        return const SizedBox();
-                      }
-
-                      final unreadCount =
-                          snapshot.data!.docs.length;
-
-                      if (unreadCount == 0) {
-                        return const SizedBox();
-                      }
-
-                      return Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 3,
-                        ),
-
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-
-                        child: Text(
-                          unreadCount.toString(),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 15),
-
-              StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection("notifications")
-                    .where(
-                  "userId",
-                  isEqualTo: FirebaseAuth.instance.currentUser!.uid,
-                )
-                    .orderBy(
-                  "createdAt",
-                  descending: true,
-                )
-                    .limit(1)
-                    .snapshots(),
-
-                builder: (context, snapshot) {
-
-                  if (!snapshot.hasData ||
-                      snapshot.data!.docs.isEmpty) {
-
-                    return Card(
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: Colors.grey.shade200,
-                          child: const Icon(
-                            Icons.notifications_none,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        title: const Text(
-                          "You're all caught up!",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: const Text(
-                          "New notifications will appear here.",
-                        ),
-                        trailing: TextButton(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => const NotificationsScreen(),
-                              ),
-                            );
-                          },
-                          child: const Text("View All"),
-                        ),
-                      ),
-                    );
-                  }
-
-                  final data =
-                  snapshot.data!.docs.first.data()
-                  as Map<String, dynamic>;
-
-                  Timestamp? timestamp = data["createdAt"];
-
-                  String time = "";
-
-                  if (timestamp != null) {
-                    time = timeago.format(
-                        timestamp.toDate(),
-                    );
-                  }
-
-                  return Card(
-                  child: InkWell(
-
-                      borderRadius: BorderRadius.circular(12),
-
-                      onTap: () {
-
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) =>
-                            const NotificationsScreen(),
-                          ),
-                        );
-
-                      },
-                    child: ListTile(
-
-                      leading: CircleAvatar(
-                        backgroundColor: _getNotificationColor(data["title"])
-                            .withOpacity(0.15),
-                        child: Icon(
-                          _getNotificationIcon(data["title"]),
-                          color: _getNotificationColor(data["title"]),
-                        ),
-                      ),
-
-                      title: Text(data["title"]),
-
-                      subtitle: Text(data["message"]),
-
-                      trailing: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            time,
-                            style: const TextStyle(
-                              fontSize: 11,
-                              color: Colors.grey,
-                            ),
-                          ),
-                          const SizedBox(height: 5),
-                          const Icon(
-                            Icons.arrow_forward_ios,
-                            size: 16,
-                          ),
-                        ],
-                      ),
-                    ),
-                      ),
                   );
                 },
               ),
